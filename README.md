@@ -30,14 +30,23 @@ Desktop:
 </p>
 Celular:
 <p align="center" style="display: flex; justify-content: center; gap: 2%;">
-    <img src="docs/Mockups%20(Celular)/2.jpg" alt="Mockup celular 1" width="300">
-    <img src="docs/Mockups%20(Celular)/3.jpg" alt="Mockup Tablet 1" width="300">
+    <img src="docs/Mockups%20(Celular)/2.jpg" alt="Mockup celular 2" width="300">
+    <img src="docs/Mockups%20(Celular)/3.jpg" alt="Mockup celular 3" width="300">
 </p>
 Tablet:
 <p align="center" style="display: flex; justify-content: center; gap: 2%;">
-    <img src="docs/Mockups%20(Tablet)/2.jpg" alt="Mockup celular 1" width="300">
-    <img src="docs/Mockups%20(Tablet)/3.jpg" alt="Mockup Tablet 1" width="300">
+    <img src="docs/Mockups%20(Tablet)/2.jpg" alt="Mockup tablet 2" width="300">
+    <img src="docs/Mockups%20(Tablet)/3.jpg" alt="Mockup Tablet 3" width="300">
 </p>
 
 3. Lista de chats grupales:
+Desktop:
+<p align="center">
+    <img src="docs/Mockups%20(Desktop)/Lista%20de%20salas%20de%20chat%20grupales.jpg" alt="Mockup Desktop 3" width="500">
+</p>
 
+Celular y Tablet:
+<p align="center" style="display: flex; justify-content: center; gap: 2%;">
+    <img src="docs/Mockups%20(Celular)/4.jpg" alt="Mockup celular 4" width="300">
+    <img src="docs/Mockups%20(Tablet)/4.jpg" alt="Mockup Tablet 4" width="300">
+</p>
