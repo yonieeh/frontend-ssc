@@ -1,6 +1,7 @@
 import React from 'react';
 import { MemberCard } from '../components/MemberCard';
-import '../style/aboutus.css';
+import './aboutus.css';
+import Navbar from '../components/Navbar';
 
 export const AboutUs: React.FC = () => {
   const team = [
@@ -22,12 +23,15 @@ export const AboutUs: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h2>Conoce al Escuadrón Sigma</h2>
-      <p style={{ color: '#aaa', marginBottom: '2rem' }}>
+    <div style={{ textAlign: 'center', backgroundImage: "url('/comic.png')" }}>
+      <Navbar />
+      <h2 id="team-title" className="text-4xl md:text-5xl font-bold font-[Comic_Neue]">Conoce al Escuadrón Sigma</h2>
+      <p style={{ color: '#000000', marginBottom: '2rem' }} className="font-[Comic_Sans_MS] text-2xl md:text-3xl">
         Los arquitectos detrás del universo chatroom más dominante del ciberespacio.
       </p>
-      <div
+      <section
+        role="list"
+        className="font-[Comic_Sans_MS] pb-10"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -35,12 +39,12 @@ export const AboutUs: React.FC = () => {
           gap: '2rem',
           maxWidth: '1200px',
           margin: '0 auto',
-        }}
+        }}  
       >
         {team.map((member, index) => (
           <MemberCard key={index} {...member} />
         ))}
-      </div>
+      </section>
     </div>
   );
 };

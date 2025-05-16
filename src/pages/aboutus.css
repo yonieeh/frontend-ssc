@@ -1,16 +1,16 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&display=swap');
+
 body {
-	background: linear-gradient(135deg, #0f0f0f, #1f1f2f);
 	color: #ffffff;
-	font-family: 'Orbitron', sans-serif;
 	margin: 0;
 	padding: 0;
 }
 
-h2 {
+#team-title {
 	font-size: 3rem;
 	margin-bottom: 1rem;
-	color: #00ffff;
-	text-shadow: 0 0 10px #00ffff;
+	color: #000000;
 }
 
 .card {
@@ -29,7 +29,7 @@ h2 {
 	overflow: visible;
 }
 
-.card:hover .card-inner {
+.card.flipped .card-inner {
 	transform: rotateY(180deg);
 }
 
@@ -43,20 +43,20 @@ h2 {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
 	padding: 1rem;
 }
 
 .card-front {
-	background: #111;
-	color: white;
-	justify-content: flex-start; /* Imagen arriba */
+	background: #f5f5f5;
+	color: #1a1a1a;
+	justify-content: flex-start;
 	padding-top: 1.5rem;
 	gap: 1rem;
+	font-size: 2rem;
 }
 
 .card-back {
-	background: #00ffff;
+	background: #e5e5e5;
 	color: #111;
 	transform: rotateY(180deg);
 	text-align: center;
@@ -72,7 +72,12 @@ h2 {
 	object-fit: cover;
 	margin-bottom: 1rem;
 	margin-top: 0.5rem;
-	border: 3px solid #00ffff;
+	border: 3px solid #2a2a2a;
 	z-index: 1;
 }
 
+.card:focus {
+	outline: 3px solid #2a2a2a;
+	outline-offset: 4px;
+	cursor: pointer;
+}
