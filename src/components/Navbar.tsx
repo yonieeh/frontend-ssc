@@ -8,9 +8,9 @@ function Navbar() {
         <img src={logo} alt="Logo" className="w-auto h-15"/>
       </a>
       <ul className="flex space-x-4">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="/aboutus" className="hover:underline text-black font-[Comic_Sans_MS]">Equipo</a></li>
+        <li><a href="#" className="hover:underline text-black font-[Comic_Sans_MS]">Iniciar sesión</a></li>
+        <li><a href="#" className="hover:underline text-black font-[Comic_Sans_MS]">Registrarse</a></li>
       </ul>
     </nav>
   )
