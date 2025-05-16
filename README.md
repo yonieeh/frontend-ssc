@@ -11,7 +11,7 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
 * Tendremos 3 vistas principales:
   1. La vista de sala de chat grupal:
      ![Mockup de desktop de la sala de chat](docs/Mockups%20(Desktop)/1)
-     ![Mockup de celular de la sala de chat](docs/Mockups%20(Celular)/1)
-     ![Mockup de tablet de la sala de chat](docs/Mockups%20(Tablet)/1)
+     ![Mockup de celular de la sala de chat](docs/Mockups%20(Celular)/1.jpg)
+     ![Mockup de tablet de la sala de chat](docs/Mockups%20(Tablet)/1.jpg)
      
 
