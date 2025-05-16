@@ -50,3 +50,6 @@ Celular y Tablet:
     <img src="docs/Mockups%20(Celular)/4.jpg" alt="Mockup celular 4" width="300">
     <img src="docs/Mockups%20(Tablet)/4.jpg" alt="Mockup Tablet 4" width="300">
 </p>
+
+## Documento de diseño:
+
