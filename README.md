@@ -9,6 +9,7 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
 
 ## Mockups:
 * Tendremos 3 vistas principales:
+  1. Sala grupal de chat:
   <p align="center">
     <img src="docs/Mockups%20(Desktop)/Sala%20de%20chat%20grupal.jpg" alt="Mockup Desktop 1" width="500">
 </p>
@@ -18,4 +19,20 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
     <img src="docs/Mockups%20(Tablet)/1.jpg" alt="Mockup Tablet 1" width="300">
 </p>
 
+2. Mensajes directos con amigos:
+<p align="center">
+    <img src="docs/Mockups%20(Desktop)/Mensajes%20directos%20con%20amigos.jpg" alt="Mockup Desktop 2" width="500">
+</p>
+
+<p align="center" style="display: flex; justify-content: center; gap: 2%;">
+    <img src="docs/Mockups%20(Celular)/2.jpg" alt="Mockup celular 1" width="300">
+    <img src="docs/Mockups%20(Celular)/3.jpg" alt="Mockup Tablet 1" width="300">
+</p>
+
+<p align="center" style="display: flex; justify-content: center; gap: 2%;">
+    <img src="docs/Mockups%20(Tablet)/2.jpg" alt="Mockup celular 1" width="300">
+    <img src="docs/Mockups%20(Tablet)/3.jpg" alt="Mockup Tablet 1" width="300">
+</p>
+
+3. Lista de chats grupales:
 
