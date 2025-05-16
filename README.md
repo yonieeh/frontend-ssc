@@ -11,11 +11,23 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
 * Tendremos 3 vistas principales:
   1. La vista de sala de chat grupal:
      <p align="center">
-     <img src="docs/Mockups%20(Desktop)/Sala de chat grupal.jpg" alt="Mockup Desktop 1" width="300"/>
-     </p>
-     <p align="center">
-     <img src="docs/Mockups%20(Celular)/1.jpg" alt="Mockup celular 1" width="300"/>
-     <img src="docs/Mockups%20(Tablet)/1.jpg" alt="Mockup Tablet 1" width="300"/>
-     </p>
+  <figure>
+    <img src="docs/Mockups%20(Desktop)/Sala%20de%20chat%20grupal.jpg" alt="Mockup Desktop 1" width="80%">
+    <figcaption align="center">Sala de chat grupal en escritorio</figcaption>
+  </figure>
+</p>
+
+<p align="center" style="display: flex; justify-content: center; gap: 2%;">
+  <figure style="display: inline-block; width: 39%; margin: 0;">
+    <img src="docs/Mockups%20(Celular)/1.jpg" alt="Mockup celular 1" width="100%">
+    <figcaption align="center">Vista en celular</figcaption>
+  </figure>
+
+  <figure style="display: inline-block; width: 39%; margin: 0;">
+    <img src="docs/Mockups%20(Tablet)/1.jpg" alt="Mockup Tablet 1" width="100%">
+    <figcaption align="center">Vista en tablet</figcaption>
+  </figure>
+</p>
+
      
 
