@@ -1,4 +1,8 @@
-import { useState } from 'react'
+//import { useState } from 'react'
+//import reactLogo from './assets/react.svg'
+//import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AboutUs } from './pages/AboutUs';
 import './App.css'
 import './index.css'
 import Navbar from './components/Navbar';
@@ -108,6 +112,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App
+export default App;
