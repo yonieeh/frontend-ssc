@@ -1,10 +1,12 @@
-import "../index.css";
+import logo from "../assets/logo.png";
 import React from "react";
 
 function Navbar() {
   return (
-    <nav className="w-full m-0 p-0 flex justify-between items-center p-4 bg-gray-800 text-white">
-      <h1 className="text-2xl font-bold">My App</h1>
+    <nav className="w-full m-0 p-0 flex justify-between items-center p-4 bg-transparent text-white">
+      <a href="#">
+        <img src={logo} alt="Logo" className="w-auto h-15"/>
+      </a>
       <ul className="flex space-x-4">
         <li><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
