@@ -10,7 +10,7 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
 ## Mockups:
 * Tendremos 3 vistas principales:
   1. La vista de sala de chat grupal:
-     ![Mockup de desktop de la sala de chat](docs/Mockups%20(Desktop)/1)
+     <img src="docs/Mockups%20(Desktop)/Sala de chat grupal.jpg" alt="Mockup Desktop 1" width="300"/>
      <img src="docs/Mockups%20(Celular)/1.jpg" alt="Mockup celular 1" width="300"/>
      <img src="docs/Mockups%20(Tablet)/1.jpg" alt="Mockup Tablet 1" width="300"/>
      
