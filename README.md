@@ -53,3 +53,18 @@ Celular y Tablet:
 
 ## Documento de diseño:
 
+<p align="center">
+    <img src="docs/Documento%20de%20diseño/1.jpg" alt="Diseño 1" width="500">
+</p>
+<p align="center">
+    <img src="docs/Documento%20de%20diseño/2.jpg" alt="Diseño 2" width="500">
+</p>
+<p align="center">
+    <img src="docs/Documento%20de%20diseño/3.jpg" alt="Diseño 3" width="500">
+</p>
+<p align="center">
+    <img src="docs/Documento%20de%20diseño/4.jpg" alt="Diseño 4" width="500">
+</p>
+
+
+
