@@ -74,5 +74,15 @@ Celular y Tablet:
     <img src="docs/Documento%20de%20diseño/4.jpg" alt="Diseño 4" width="500">
 </p>
 
+* Ejemplos de aplicación: El mejor ejemplo de uso de nuestra paleta de colores se encuentra en los botones de la página.
+  <p align="center">
+    <img src="src/assets/login_button.png" alt="botón" width="500">
+</p>
+<p align="center">
+    <img src="src/assets/login_button_hover.png" alt="botón con mouse" width="500">
+</p>
+
+Por otro lado, las fuentes las usamos alrededor de todo el proyecto. Comic Neue fue usada en los títulos y encabezados, mientras que Comic Sans MS es usada en los "body".
+
 
 
