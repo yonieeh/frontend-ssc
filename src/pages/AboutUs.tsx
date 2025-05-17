@@ -6,19 +6,19 @@ import Navbar from '../components/Navbar';
 export const AboutUs: React.FC = () => {
   const team = [
     {
-      name: 'SigmaBoy',
-      description: 'Creador del núcleo. Arquitecto del caos.',
-      imageUrl: '/assets/images.jpg',
+      name: 'Javi',
+      description: 'Estudiante de Ingeniería Civil en Computación. Compilando vida, debugueando decisiones. A veces en modo automático, pero siempre en ejecución.',
+      imageUrl: 'javi.jpg',
     },
     {
-      name: 'NeoKnight',
-      description: 'Defensor del backend. Guerrero del código limpio.',
-      imageUrl: '/assets/images.jpg',
+      name: 'yoniee',
+      description: 'Estudiante de la licenciatura en computación en la UC y justiciero de Gotham City.',
+      imageUrl: 'yoni.jpg',
     },
     {
-      name: 'DarkPixel',
-      description: 'Maestro del frontend. Hace que el caos se vea bonito.',
-      imageUrl: '/assets/images.jpg',
+      name: 'Pablo',
+      description: 'Estudiante LICdC UC. Llego tarde a todos lados porque soy Spider-Man',
+      imageUrl: 'pablo.jpg',
     },
   ];
 

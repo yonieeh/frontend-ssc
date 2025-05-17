@@ -23,19 +23,16 @@ export const MemberCard: React.FC<Props> = ({name, description, imageUrl}) => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					toggleFlip();
-					console.log("flipped");
 				}
 			}}
 		>
-			<div className = "card">
-				<div className="card-inner" aria-hidden="true">
-					<div className="card-front">
-						<img src={imageUrl} alt={name} className="profile-pic"></img>
-						<h3>{name}</h3>
-					</div>
-					<div className="card-back">
-						<p>{description}</p>
-					</div>
+			<div className="card-inner" aria-hidden="true">
+				<div className="card-front">
+					<img src={imageUrl} alt={name} className="profile-pic"></img>
+					<h3 className="text-xl md:text-2xl ">{name}</h3>
+				</div>
+				<div className="card-back">
+					<p>{description}</p>
 				</div>
 			</div>
 		</article>
