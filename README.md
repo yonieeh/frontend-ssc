@@ -12,7 +12,7 @@ Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen 
 Se diseño el siguiente diagrama E/R:
 
 <p align="center">
-    <img src="docs/Diagrama.jpg" alt="Diagrama E/R" width="500">
+    <img src="docs/diagrama.jpg" alt="Diagrama E/R" width="500">
 
 
 ## Mockups:
