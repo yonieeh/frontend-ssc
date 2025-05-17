@@ -7,6 +7,14 @@ A diferencia de los sistemas tradicionales de mensajería, este incluirá una re
 La finalidad del proyecto es integrar funcionalidad de comunicación en tiempo real con **elementos visuales dinámicos**, promoviendo una experiencia de interacción más **inmersiva y entretenida** para los participantes, con el objetivo de que sea una aplicación ideal para la conexión en un entorno virtual.
 Estará principalmente dirigida a **jóvenes adultos y estudiantes** que deseen nuevas formas de interacción en línea.
 
+## Diagrama E/R:
+
+Se diseño el siguiente diagrama E/R:
+
+<p align="center">
+    <img src="docs/Diagrama.jpg" alt="Diagrama E/R" width="500">
+
+
 ## Mockups:
 * Tendremos 3 vistas principales:
   1. Sala grupal de chat:
