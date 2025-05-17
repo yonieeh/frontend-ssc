@@ -51,6 +51,14 @@ Celular y Tablet:
     <img src="docs/Mockups%20(Tablet)/4.jpg" alt="Mockup Tablet 4" width="300">
 </p>
 
+
+## Logo:
+
+<p align="center">
+    <img src="src/assets/logo.png" alt="Logo" width="500">
+</p>
+
+
 ## Documento de diseño:
 
 <p align="center">
