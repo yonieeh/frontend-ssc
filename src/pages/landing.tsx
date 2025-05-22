@@ -18,7 +18,7 @@ function LandingPage() {
       <Navbar />
       {/* Title */}
       <h1 id="main-title" className="text-4xl md:text-5xl font-bold text-center font-[Comic_Neue] text-black">
-        Stickman Sigma Chat
+        Stickman Sigma Chat!!
       </h1>
 
       {/* Stickman Image aligned to the right */}
