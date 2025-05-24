@@ -11,10 +11,27 @@ import groupChat from '../assets/group_chat.jpg'
 import groupChatMobile from '../assets/group_chat_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
 import friendListMobile from '../assets/friend_list_mobile.jpg'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 function LandingPage() {
-  return (
+  const [audioStarted, setAudioStarted] = useState(false);
+  const audio = new Audio('/audio.mp3');
+  audio.volume = 0.5;
+
+  const handleImageClick = () => {
+    if (!audioStarted) {
+      audio.play().catch(err => {
+        console.warn('No se pudo reproducir el audio:', err);
+      });
+      setAudioStarted(true);
+    }
+  };
+
+
+    return (
     <div className="min-h-screen flex flex-col justify-between relative m-0 pb-10 w-full max-w-none" style={{ backgroundImage: "url('/comic.png')"}}>
+		
       <Navbar />
       {/* Title */}
       <h1 id="main-title" className="text-4xl md:text-5xl font-bold text-center font-[Comic_Neue] text-black">
@@ -42,13 +59,14 @@ function LandingPage() {
           />
         </div>
 
-        <div className="flex justify-end my-10 h-150">
-          <img
-            src={stickmanLeaning}
-            alt="Stickman leaning"
-            className="w-fit h-auto object-contain"
-            />
-        </div>
+         <div className="flex justify-end my-10 h-150">
+        <img
+          src={stickmanLeaning}
+          alt="Stickman leaning"
+          className="w-fit h-auto object-contain cursor-pointer"
+          onClick={handleImageClick}
+        />
+      </div>
       </div>
 
       <div className="flex justify-end my-10 w-full">
