@@ -10,8 +10,7 @@ import loginButtonHover from '../assets/login_button_hover.png'
 import groupChat from '../assets/group_chat.jpg'
 import groupChatMobile from '../assets/group_chat_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
-import friendListMobile from '../assets/friend_list_mobile.jpg'
-import { useEffect } from 'react';
+import friendListMobile from '../assets/friend_list_mobile.jpg';
 import { useState } from 'react';
 
 function LandingPage() {
@@ -59,14 +58,14 @@ function LandingPage() {
           />
         </div>
 
-         <div className="flex justify-end my-10 h-150">
-        <img
-          src={stickmanLeaning}
-          alt="Stickman leaning"
-          className="w-fit h-auto object-contain cursor-pointer"
-          onClick={handleImageClick}
-        />
-      </div>
+        <div className="flex justify-end my-10 h-150">
+          <img
+            src={stickmanLeaning}
+            alt="Stickman leaning"
+            className="w-fit h-auto object-contain cursor-pointer"
+            onClick={handleImageClick}
+          />
+        </div>
       </div>
 
       <div className="flex justify-end my-10 w-full">
