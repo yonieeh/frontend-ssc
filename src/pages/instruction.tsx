@@ -123,13 +123,13 @@ function InstructionPage() {
       <div className="flex justify-between w-full mt-8 px-10">
         <button
           onClick={prevSlide}
-          className="text-lg font-bold px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-700 transition duration-200"
+          className="text-lg font-bold px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
         >
           ← Anterior
         </button>
         <button
           onClick={nextSlide}
-          className="text-lg font-bold px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-700 transition duration-200"
+          className="text-lg font-bold px-4 py-2 bg-black text-white rounded-xl hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
         >
           Siguiente →
         </button>

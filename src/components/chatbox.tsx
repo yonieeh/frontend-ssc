@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const randomUsername = () => {
-  const usernames = ["pabloarellano25", "yonieeh", "JeibiCL", "peponix360", "waldonepe", "rzinss", "sanqrider", "megulover", "Carrasco", "srPerez", "ryanyamal", "vewe", "lewa", "mbappe", "valverde", "zampedri"];
+  const usernames = ["pabloarellano25", "yonieeh", "JeibiCL", "peponix360", "waldonepe", "rzinss", "sanqrider", "megulover", "Carrasco", "srPerez", "ryanyamal", "vewe", "lewa", "mbappe", "valverde", "zampedri", "monti7475", "hoeako"];
   return usernames[Math.floor(Math.random() * usernames.length)];
 }
 
