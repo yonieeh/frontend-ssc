@@ -74,7 +74,7 @@ const slides = [
 
 function InstructionPage() {
   const [current, setCurrent] = useState(0);
- const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Solo se ejecuta al montar el componente
   useEffect(() => {
@@ -101,17 +101,25 @@ function InstructionPage() {
       ¿Cómo usar Stickman Sigma Chat?
     </h1>
 	<div className="flex justify-center items-start gap-10 w-full">
-    <div className="w-full max-w-4xl mx-auto bg-white bg-opacity-80 p-6 rounded-2xl shadow-lg flex flex-col items-center text-black">
-      <h2 className="text-2xl md:text-3xl font-bold font-[Comic_Neue] text-center mb-4">
-        {slides[current].title}
-      </h2>
-      <p className="text-md md:text-lg font-[Comic_Sans_MS] text-center  px-4">
-        {slides[current].description}
-      </p>
-      <div className="w-full max-w-sm h-auto object-contain  hidden lg:block">
-  	    {slides[current].imageComponent}
+    <div className="w-full max-w-4xl mx-auto bg-white bg-opacity-80 p-6 rounded-2xl shadow-lg flex flex-col items-center text-black overflow-hidden">
+      <div
+        className="flex transition-transform duration-700 ease-in-out w-full"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {slides.map((slide, index) => (
+        <div key={index} className="w-full flex-shrink-0 flex flex-col items-center justify-center px-4 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold font-[Comic_Neue] mb-4">
+            {slide.title}
+          </h2>
+          <p className="text-md md:text-lg font-[Comic_Sans_MS]">
+            {slide.description}
+          </p>
+          <div className="w-full max-w-sm h-auto object-contain hidden lg:block">
+            {slide.imageComponent}
+          </div>
+        </div>
+        ))}
       </div>
-
       <div className="flex justify-between w-full mt-8 px-10">
         <button
           onClick={prevSlide}
