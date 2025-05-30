@@ -1,5 +1,5 @@
 import './landing.css';
-
+import { Greeting } from '../components/saludo';
 import Navbar from '../components/Navbar';
 
 import stickmanLeaning from '../assets/stickman.png'
@@ -20,13 +20,10 @@ function LandingPage() {
       <h1 id="main-title" className="text-4xl md:text-5xl font-bold text-center font-[Comic_Neue] text-black">
         Stickman Sigma Chat!!
       </h1>
-
       {/* Stickman Image aligned to the right */}
       <div className="flex justify-between pt-10">
         <div className="w-1/2 h-150 ml-7">
-          <h2 id="subtitle" className="text-2xl md:text-3xl font-bold font-[Comic_Neue]">
-            Bienvenido a Stickman Sigma Chat
-          </h2>
+          <Greeting />
           <h3 id="main-desc" className="text-l md:text-xl font-[Comic_Sans_MS] mt-3 ml-2 text-black">
             Chatea con gente de todo el mundo, haz nuevos amigos y expresate a través de un stickman.
           </h3>
