@@ -10,6 +10,7 @@ function Navbar() {
       <ul className="flex space-x-4">
         <li><a href="/chat" className="hover:underline text-black font-[Comic_Sans_MS]">Empieza a chatear!</a></li>
         <li><a href="/about-us" className="hover:underline text-black font-[Comic_Sans_MS]">Equipo</a></li>
+		<li><a href="/instructions" className="hover:underline text-black font-[Comic_Sans_MS]">Instrucciones</a></li>
         <li><a href="#" className="hover:underline text-black font-[Comic_Sans_MS]">Iniciar sesión</a></li>
         <li><a href="#" className="hover:underline text-black font-[Comic_Sans_MS]">Registrarse</a></li>
       </ul>
