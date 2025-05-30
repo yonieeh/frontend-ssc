@@ -42,18 +42,18 @@ function Chatbox() {
         ))}
         <div ref={bottomRef} />
       </div>
-      <div className="flex w-full gap-2">
+      <div className="flex gap-2 w-full">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a]"
+          className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] shadow-sm focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a] w-[70%]"
           placeholder="Escribe tu mensaje..."
         />
         <button
           onClick={sendMessage}
-          className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a]"
+          className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a] w-[30%]"
         >
           Enviar
         </button>

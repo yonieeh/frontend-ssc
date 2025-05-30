@@ -64,7 +64,7 @@ function Stickmanarea() {
       className="flex-1 h-full bg-[#e5e5e5] border-3 border-[#1a1a1a] flex items-center justify-center relative overflow-hidden focus:outline-none focus:ring-3 focus:ring-blue-500"
     >
       <div
-        className="absolute"
+        className="absolute transition-all duration-150 ease-in-out"
         style={{
           top: position.y,
           left: position.x
