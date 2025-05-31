@@ -1,6 +1,9 @@
 # Waldo_dame_cien_frontend_25-1
 Proyecto frontend 25-1
 
+## Link al deploy
+https://cheerful-youtiao-e486b9.netlify.app/
+
 ## Descripción del Proyecto
 Nuestro proyecto consiste en el desarrollo de un sistema de mensajería instantánea tipo **chatroom**, que permitirá a los usuarios comunicarse en tiempo real dentro de un entorno visual compartido.
 A diferencia de los sistemas tradicionales de mensajería, este incluirá una representación gráfica interactiva de una **sala virtual**, en la cual los usuarios estarán representados mediante **avatars tipo stickman**, los cuales podrán ser personalizados según las preferencias individuales de cada usuario.
