@@ -1,12 +1,12 @@
 import './landing.css';
 import { Greeting } from '../components/saludo';
 import Navbar from '../components/Navbar';
-
+import { useNavigate } from 'react-router-dom';
 import stickmanLeaning from '../assets/stickman.png'
-import registerButton from '../assets/register_button.png'
-import registerButtonHover from '../assets/register_button_hover.png'
-import loginButton from '../assets/login_button.png'
-import loginButtonHover from '../assets/login_button_hover.png'
+import registerButtonImage from '../assets/register_button.png'
+import registerButtonHoverImage from '../assets/register_button_hover.png'
+import loginButtonImage from '../assets/login_button.png'
+import loginButtonHoverImage from '../assets/login_button_hover.png'
 import groupChat from '../assets/group_chat.jpg'
 import groupChatMobile from '../assets/group_chat_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
@@ -29,7 +29,56 @@ function LandingPage() {
     }
   };
 
+  const LoginButton = () => {
+    const navigate = useNavigate();
+    const handleLoginClick = () => {
+      navigate('/login');
+    };
+    return (<button
+      onClick={handleLoginClick}
+      className="group p-0 border-none bg-transparent w-40"
+    >
+      <div className="relative w-40 h-fit">
+        <img
+          src={loginButtonImage}
+          alt="Login Button"
+          className="group-hover:opacity-0 transition-opacity duration-200"
+        />
+        <img
+          src={loginButtonHoverImage}
+          alt="Login Button Hover"
+          className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        />
+      </div>
+    </button>
+    );
+  }
 
+  const RegisterButton = () => {
+    const navigate = useNavigate();
+    const HandleRegisterClick = () => {
+      navigate('/register');
+    };
+    return (<button
+      onClick={HandleRegisterClick} 
+      className="group p-0 bg-transparent border-none w-40"
+    >
+          <div className="relative w-40 h-fit">
+            <img
+              src={registerButtonImage}
+              alt="Register Button"
+              className="group-hover:opacity-0 transition-opacity"
+            />
+            <img
+              src={registerButtonHoverImage}
+              alt="Register Button Hover"
+              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            />
+          </div>
+    </button>
+
+    )
+  }
 
     return (
     <div className="min-h-screen flex flex-col justify-between relative m-0 pb-10 w-full max-w-none" style={{ backgroundImage: "url('/comic.png')"}}>
@@ -89,34 +138,11 @@ function LandingPage() {
       </h1>
 
       <div className="flex justify-center w-full gap-[15vw] items-center">
-        <button className="group p-0 border-none bg-transparent w-40">
-          <div className="relative w-40 h-fit">
-            <img
-              src={loginButton}
-              alt="Login Button"
-              className="group-hover:opacity-0 transition-opacity duration-200"
-              />
-
-            <img
-              src={loginButtonHover}
-              alt="Login Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            />
-          </div>
-        </button>
+        <LoginButton/>
 
         <button className="group p-0 bg-transparent border-none w-40">
           <div className="relative w-40 h-fit">
-            <img
-              src={registerButton}
-              alt="Register Button"
-              className="group-hover:opacity-0 transition-opacity"
-            />
-            <img
-              src={registerButtonHover}
-              alt="Register Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
+            <RegisterButton/>
           </div>
         </button>
       </div>

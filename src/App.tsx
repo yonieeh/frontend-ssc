@@ -6,6 +6,8 @@ import AboutUs from './pages/AboutUs';
 import LandingPage from './pages/landing';
 import Chat from './pages/chat';
 import InstructionPage from './pages/instruction';
+import LoginPage from './pages/login.tsx';
+import RegisterPage from './pages/register';
 import './App.css'
 import './index.css'
 
@@ -18,6 +20,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat" element={<Chat />} />
 		    <Route path="/instructions" element={<InstructionPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
   );
