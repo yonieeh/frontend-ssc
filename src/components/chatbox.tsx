@@ -1,43 +1,77 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import io from "socket.io-client";
 
-const randomUsername = () => {
-  const usernames = ["pabloarellano25", "yonieeh", "JeibiCL", "peponix360", "waldonepe", "rzinss", "sanqrider", "megulover", "Carrasco", "srPerez", "ryanyamal", "vewe", "lewa", "mbappe", "valverde", "zampedri", "monti7475", "hoeako"];
-  return usernames[Math.floor(Math.random() * usernames.length)];
-}
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
-const localStorageKey = "chatmessages";
 
 function Chatbox() {
-  const [chatMessages, setChatMessages] = useState<{ username: string; message: string }[]>([]);
+  const [chatMessages, setChatMessages] = useState<
+    { id: number; usuario: { nombre_usuario: string }; contenido: string; }[]
+  >([]);
   const [input, setInput] = useState("");
-
+  const { idSala } = useParams();
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    socket.on('chatMessage', (message) => {
+      setChatMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.off('chatMessage');
+    };
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   });
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem(localStorageKey);
-    if (storedMessages) {
-      setChatMessages(JSON.parse(storedMessages));
-    }
-  }, []);
+    const fetchChatMessages = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${idSala}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const messages = response.data;
+        setChatMessages(messages);
+      } catch (error) {
+        console.error("Error fetching chat messages:", error);
+      }
+    };
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
-    const newMessage = { username: randomUsername(), message: input };
-    setChatMessages((prev) => [...prev, newMessage]);
-    setInput("");
-    localStorage.setItem(localStorageKey, JSON.stringify([...chatMessages, newMessage]));
+    fetchChatMessages();
+  }, [idSala]);
+
+  const sendMessage = async () => {
+    if (input.trim() !== "") {
+      const token = localStorage.getItem("token");
+      const message = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${idSala}`, {
+          contenido: input,
+          timestamp: new Date().toISOString(),
+          estado: "Enviado"
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+        }
+      });
+      const newMessage = message.data;
+      socket.emit("chatMessage", newMessage);
+      setInput("");
+    }
   };
+
   
   return (
-    <div className="w-[25%] min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col p-4 h-full">
+    <div className="w-full min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col p-4 h-full">
       <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-2 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
         {chatMessages.map((message, index) => (
           <div key={index}>
-            <strong>{message.username}:</strong> {message.message}
+            <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
           </div>
         ))}
         <div ref={bottomRef} />

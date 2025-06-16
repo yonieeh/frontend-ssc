@@ -1,93 +1,73 @@
 import { useState } from 'react';
-import registerButtonImage from '../assets/register_button.png'
-import registerButtonHoverImage from '../assets/register_button_hover.png'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const RegisterForm = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        username:'',
-        email:'',
-        password:''
-    });
+	const navigate = useNavigate();
+	const [formData, setFormData] = useState({
+		usuario: '',
+		correo: '',
+		contrasena: ''
+	});
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setFormData({
+			...formData,
+			[e.target.name]: e.target.value
+		});
+	};
 
-    const handleSubmit = async(e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:3000/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Usuario registrado con éxito!');
-                navigate('/');
-            } else {
-                alert(`Error: ${result.message}`);
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Registro con error');
-        }
-    };
-    return(
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-72'>
-            <input
-            type="text"
-            name='username'
-            placeholder='Username'
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className='p-2 border rounded' />
-            <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="p-2 border rounded"
-            />
-            <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="p-2 border rounded"
-            />
-            <button
-    type="submit"
-    className="group p-0 bg-transparent border-none w-40"
-  >
-    <div className="relative w-40 h-fit">
-      <img
-        src={registerButtonImage}
-        alt="Register Button"
-        className="group-hover:opacity-0 transition-opacity"
-      />
-      <img
-        src={registerButtonHoverImage}
-        alt="Register Button Hover"
-        className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
-      />
-    </div>
-  </button>
-        </form>
-    );
+	const handleSubmit = async(e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup`, formData);
+			if (response.status === 201) {
+				alert('Registro exitoso!');
+				navigate('/');
+			}
+		} catch (err) {
+			console.error(err);
+			alert('Hubo un error al realizar el registro, inténtalo de nuevo');
+		}
+	};
+	
+	return(
+		<form onSubmit={handleSubmit} className='flex flex-col gap-4 justify-center'>
+			<input
+				type="text"
+				name='usuario'
+				placeholder='Usuario'
+				value={formData.usuario}
+				onChange={handleChange}
+				required
+				className='p-2 border'
+			/>
+			<input
+				type="text"
+				name="correo"
+				placeholder="Correo"
+				value={formData.correo}
+				onChange={handleChange}
+				required
+				className="p-2 border"
+			/>
+			<input
+				type="text"
+				name="contrasena"
+				placeholder="Contraseña"
+				value={formData.contrasena}
+				onChange={handleChange}
+				required
+				className="p-2 border"
+			/>
+			<button
+				type="submit"
+				className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
+			>
+				Crear cuenta
+			</button>
+		</form>
+	);
 };
 
 export default RegisterForm
