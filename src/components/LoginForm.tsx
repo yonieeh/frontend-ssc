@@ -19,6 +19,7 @@ const LoginForm = () => {
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
 		try {
+			console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 			const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData);
 			const result = await response.data;
 
