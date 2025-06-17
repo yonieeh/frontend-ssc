@@ -88,15 +88,15 @@ function LandingPage() {
         Stickman Sigma Chat!!
       </h1>
       <div className="flex justify-between pt-10">
-        <div className="w-1/2 h-150 ml-7">
+        <div className="w-1/2 min-h-fit ml-7">
           <Greeting />
-          <h3 id="main-desc" className="text-l md:text-xl font-[Comic_Sans_MS] mt-3 ml-2 text-black">
+          <h3 id="main-desc" className="text-l md:text-xl lg:text-2xl font-[Comic_Sans_MS] mt-3 ml-2 text-black">
             Chatea con gente de todo el mundo, haz nuevos amigos y expresate a través de un stickman.
           </h3>
           <img 
             src={groupChatMobile}
             alt="Sala de chat con múltiples personas"
-            className="w-fit h-auto object-contain mt-10 border-10 border-black sm:hidden"
+            className="w-fit h-auto object-contain mt-10 border-10 border-black lg:hidden"
             />
           <img
             src={groupChat}
@@ -105,7 +105,7 @@ function LandingPage() {
           />
         </div>
 
-        <div className="flex justify-end my-10 h-150">
+        <div className="flex justify-end my-10 min-h-fit">
           <img
             src={stickmanLeaning}
             alt="Stickman leaning"
@@ -116,14 +116,14 @@ function LandingPage() {
       </div>
 
       <div className="flex justify-end my-10 w-full">
-        <div className="w-[70%] h-150 mr-7">
-          <h3 id="paragraph" className="text-l md:text-xl font-[Comic_Sans_MS] mt-3 mr-2 text-center">
+        <div className="w-[70%] min-h-fit mr-7">
+          <h3 id="paragraph" className="text-l md:text-xl lg:text-2xl font-[Comic_Sans_MS] mt-3 mr-2 text-right">
             No pierdas contacto con la gente que conoces! Agrega a tus amigos y comienza a chatear.
           </h3>
           <img
             src={friendListMobile}
             alt="Lista de amigos"
-            className="w-fit h-auto object-contain mt-10 border-10 border-black sm:hidden"
+            className="w-fit h-auto object-contain mt-10 border-10 border-black lg:hidden"
           />
           <img
             src={friendList}

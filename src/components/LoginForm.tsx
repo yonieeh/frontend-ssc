@@ -49,7 +49,7 @@ const LoginForm = () => {
 				className="p-2 border"
 			/>
 			<input
-				type="text"
+				type="password"
 				name="contrasena"
 				placeholder="Contraseña"
 				value={formData.contrasena}

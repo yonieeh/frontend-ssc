@@ -13,7 +13,7 @@ function Navbar() {
     if (token) {
       setIsLoggedIn(true);
     }
-  });
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');

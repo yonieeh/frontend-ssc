@@ -30,7 +30,7 @@ const RegisterForm = () => {
 			alert('Hubo un error al realizar el registro, inténtalo de nuevo');
 		}
 	};
-	
+
 	return(
 		<form onSubmit={handleSubmit} className='flex flex-col gap-4 justify-center'>
 			<input
@@ -52,7 +52,7 @@ const RegisterForm = () => {
 				className="p-2 border"
 			/>
 			<input
-				type="text"
+				type="password"
 				name="contrasena"
 				placeholder="Contraseña"
 				value={formData.contrasena}

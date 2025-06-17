@@ -16,7 +16,7 @@ export function Greeting() {
       greeting = "¡Buenas noches!";
     }
 
-    setMessage(`${greeting} ¡Bienvenido a Stickman Sigma Chat!.`);
+    setMessage(`${greeting} ¡Bienvenido a Stickman Sigma Chat!`);
   }, []);
 
   return <h2 id="subtitle" className="text-2xl md:text-3xl font-bold font-[Comic_Neue]">{message}</h2>;
