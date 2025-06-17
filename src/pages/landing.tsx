@@ -1,12 +1,12 @@
 import './landing.css';
 import { Greeting } from '../components/saludo';
 import Navbar from '../components/Navbar';
-
+import { useNavigate } from 'react-router-dom';
 import stickmanLeaning from '../assets/stickman.png'
-import registerButton from '../assets/register_button.png'
-import registerButtonHover from '../assets/register_button_hover.png'
-import loginButton from '../assets/login_button.png'
-import loginButtonHover from '../assets/login_button_hover.png'
+import registerButtonImage from '../assets/register_button.png'
+import registerButtonHoverImage from '../assets/register_button_hover.png'
+import loginButtonImage from '../assets/login_button.png'
+import loginButtonHoverImage from '../assets/login_button_hover.png'
 import groupChat from '../assets/group_chat.jpg'
 import groupChatMobile from '../assets/group_chat_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
@@ -29,7 +29,56 @@ function LandingPage() {
     }
   };
 
+  const LoginButton = () => {
+    const navigate = useNavigate();
+    const handleLoginClick = () => {
+      navigate('/login');
+    };
+    return (<button
+      onClick={handleLoginClick}
+      className="group p-0 border-none bg-transparent w-40"
+    >
+      <div className="relative w-40 h-fit">
+        <img
+          src={loginButtonImage}
+          alt="Login Button"
+          className="group-hover:opacity-0 transition-opacity duration-200"
+        />
+        <img
+          src={loginButtonHoverImage}
+          alt="Login Button Hover"
+          className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        />
+      </div>
+    </button>
+    );
+  }
 
+  const RegisterButton = () => {
+    const navigate = useNavigate();
+    const HandleRegisterClick = () => {
+      navigate('/register');
+    };
+    return (<button
+      onClick={HandleRegisterClick} 
+      className="group p-0 bg-transparent border-none w-40"
+    >
+          <div className="relative w-40 h-fit">
+            <img
+              src={registerButtonImage}
+              alt="Register Button"
+              className="group-hover:opacity-0 transition-opacity"
+            />
+            <img
+              src={registerButtonHoverImage}
+              alt="Register Button Hover"
+              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            />
+          </div>
+    </button>
+
+    )
+  }
 
     return (
     <div className="min-h-screen flex flex-col justify-between relative m-0 pb-10 w-full max-w-none" style={{ backgroundImage: "url('/comic.png')"}}>
@@ -39,15 +88,15 @@ function LandingPage() {
         Stickman Sigma Chat!!
       </h1>
       <div className="flex justify-between pt-10">
-        <div className="w-1/2 h-150 ml-7">
+        <div className="w-1/2 min-h-fit ml-7">
           <Greeting />
-          <h3 id="main-desc" className="text-l md:text-xl font-[Comic_Sans_MS] mt-3 ml-2 text-black">
+          <h3 id="main-desc" className="text-l md:text-xl lg:text-2xl font-[Comic_Sans_MS] mt-3 ml-2 text-black">
             Chatea con gente de todo el mundo, haz nuevos amigos y expresate a través de un stickman.
           </h3>
           <img 
             src={groupChatMobile}
             alt="Sala de chat con múltiples personas"
-            className="w-fit h-auto object-contain mt-10 border-10 border-black sm:hidden"
+            className="w-fit h-auto object-contain mt-10 border-10 border-black lg:hidden"
             />
           <img
             src={groupChat}
@@ -56,7 +105,7 @@ function LandingPage() {
           />
         </div>
 
-        <div className="flex justify-end my-10 h-150">
+        <div className="flex justify-end my-10 min-h-fit">
           <img
             src={stickmanLeaning}
             alt="Stickman leaning"
@@ -67,14 +116,14 @@ function LandingPage() {
       </div>
 
       <div className="flex justify-end my-10 w-full">
-        <div className="w-[70%] h-150 mr-7">
-          <h3 id="paragraph" className="text-l md:text-xl font-[Comic_Sans_MS] mt-3 mr-2 text-center">
+        <div className="w-[70%] min-h-fit mr-7">
+          <h3 id="paragraph" className="text-l md:text-xl lg:text-2xl font-[Comic_Sans_MS] mt-3 mr-2 text-right">
             No pierdas contacto con la gente que conoces! Agrega a tus amigos y comienza a chatear.
           </h3>
           <img
             src={friendListMobile}
             alt="Lista de amigos"
-            className="w-fit h-auto object-contain mt-10 border-10 border-black sm:hidden"
+            className="w-fit h-auto object-contain mt-10 border-10 border-black lg:hidden"
           />
           <img
             src={friendList}
@@ -89,34 +138,11 @@ function LandingPage() {
       </h1>
 
       <div className="flex justify-center w-full gap-[15vw] items-center">
-        <button className="group p-0 border-none bg-transparent w-40">
-          <div className="relative w-40 h-fit">
-            <img
-              src={loginButton}
-              alt="Login Button"
-              className="group-hover:opacity-0 transition-opacity duration-200"
-              />
-
-            <img
-              src={loginButtonHover}
-              alt="Login Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            />
-          </div>
-        </button>
+        <LoginButton/>
 
         <button className="group p-0 bg-transparent border-none w-40">
           <div className="relative w-40 h-fit">
-            <img
-              src={registerButton}
-              alt="Register Button"
-              className="group-hover:opacity-0 transition-opacity"
-            />
-            <img
-              src={registerButtonHover}
-              alt="Register Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
+            <RegisterButton/>
           </div>
         </button>
       </div>

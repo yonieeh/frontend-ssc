@@ -23,7 +23,7 @@ export const AboutUs: React.FC = () => {
   ];
 
   return (
-    <div style={{ textAlign: 'center', backgroundImage: "url('/comic.png')" }}>
+    <div className="min-h-screen"style={{ textAlign: 'center', backgroundImage: "url('/comic.png')" }}>
       <Navbar />
       <h2 id="team-title" className="text-4xl md:text-5xl font-bold font-[Comic_Neue]">Conoce al Escuadrón Sigma</h2>
       <p style={{ color: '#000000', marginBottom: '2rem' }} className="font-[Comic_Sans_MS] text-2xl md:text-3xl">

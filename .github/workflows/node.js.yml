@@ -2,7 +2,7 @@ name: Deploy website
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "login-register" ]
 
 jobs:
   build-and-deploy:
@@ -23,9 +23,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Write .env file
+        run: echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" > .env
+
       - name: Build project
         run: npm run build
-
+        
       - name: Deploy to Netlify
         id: netlify_deploy
         run: |
