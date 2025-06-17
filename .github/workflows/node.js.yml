@@ -23,16 +23,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Debug ENV
-        run: echo "VITE_BACKEND_URL is $VITE_BACKEND_URL"
-        env:
-          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+      - name: Write .env file
+        run: echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" > .env
 
       - name: Build project
         run: npm run build
-        env:
-          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
-
+        
       - name: Deploy to Netlify
         id: netlify_deploy
         run: |
