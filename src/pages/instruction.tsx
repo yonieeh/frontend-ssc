@@ -11,10 +11,8 @@ import sendMessage from '../assets/send_message.jpg'
 import sendMessageMobile from '../assets/send_message_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
 import friendListMobile from '../assets/friend_list_mobile.jpg';
-import { useState } from 'react';
-import { useRef } from 'react';
-
-import { useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './instruction.css';
 
@@ -112,10 +110,19 @@ const slides = [
 ];
 
 function InstructionPage() {
+  const navigate = useNavigate();
+  const [pop, setPop] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [isLogged, setIsLogged] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Solo se ejecuta al montar el componente
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLogged(true);
+    }
+  }, []);
+
   useEffect(() => {
     audioRef.current = new Audio('/audio.mp3');
     audioRef.current.volume = 0.5;
@@ -127,6 +134,9 @@ function InstructionPage() {
         console.warn('No se pudo reproducir el audio:', err);
       });
     }
+
+    setPop(true);
+    setTimeout(() => setPop(false), 400);
   };
 
   const nextSlide = () => setCurrent((current + 1) % slides.length);
@@ -176,48 +186,50 @@ function InstructionPage() {
           </div>
         </div>
 
-        <div className="flex justify-end my-10 h-150">
+        <div className="flex justify-end my-10 h-fit">
           <img
             src={stickmanLeaning}
             alt="Stickman leaning"
-            className="w-fit h-auto object-contain cursor-pointer"
+            className={`w-fit h-auto object-contain cursor-pointer ${pop ? 'stickman-pop' : ''}`}
             onClick={handleImageClick}
           />
         </div>
       </div>
+      
+      {!isLogged && 
+        <div className="flex justify-center w-full gap-[15vw] items-center">
+          <button onClick={() => navigate('/login')} className="group p-0 border-none bg-transparent w-40">
+            <div className="relative w-40 h-fit">
+              <img
+                src={loginButton}
+                alt="Login Button"
+                className="group-hover:opacity-0 transition-opacity duration-200"
+                />
 
-      <div className="flex justify-center w-full gap-[15vw] items-center">
-        <button className="group p-0 border-none bg-transparent w-40">
-          <div className="relative w-40 h-fit">
-            <img
-              src={loginButton}
-              alt="Login Button"
-              className="group-hover:opacity-0 transition-opacity duration-200"
+              <img
+                src={loginButtonHover}
+                alt="Login Button Hover"
+                className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               />
+            </div>
+          </button>
 
-            <img
-              src={loginButtonHover}
-              alt="Login Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            />
-          </div>
-        </button>
-
-        <button className="group p-0 bg-transparent border-none w-40">
-          <div className="relative w-40 h-fit">
-            <img
-              src={registerButton}
-              alt="Register Button"
-              className="group-hover:opacity-0 transition-opacity"
-            />
-            <img
-              src={registerButtonHover}
-              alt="Register Button Hover"
-              className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </div>
-        </button>
-      </div>
+          <button onClick={() => navigate('/register')} className="group p-0 bg-transparent border-none w-40">
+            <div className="relative w-40 h-fit">
+              <img
+                src={registerButton}
+                alt="Register Button"
+                className="group-hover:opacity-0 transition-opacity"
+              />
+              <img
+                src={registerButtonHover}
+                alt="Register Button Hover"
+                className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+            </div>
+          </button>
+        </div>
+      }
     </div>
 );
 
