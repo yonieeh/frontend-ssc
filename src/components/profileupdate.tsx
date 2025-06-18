@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 function ProfileUpdate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    usuario: '',
+    nombre_usuario: '',
     contrasena: '',
     confirmarContrasena: ''
   });
@@ -28,7 +28,10 @@ function ProfileUpdate() {
         alert('Las contraseñas no coinciden');
         return;
       }
-      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, formData, {
+      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, { 
+        nombre_usuario: formData.nombre_usuario, 
+        contrasena: formData.contrasena 
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -70,9 +73,9 @@ function ProfileUpdate() {
         <input 
           type="text" 
           id="usuario" 
-          name="usuario" 
+          name="nombre_usuario" 
           placeholder='Ingresa tu usuario nuevo'
-          value={formData.usuario} 
+          value={formData.nombre_usuario} 
           onChange={handleChange} 
           className="p-2 border" 
         />
