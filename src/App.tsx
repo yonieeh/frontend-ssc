@@ -8,6 +8,7 @@ import Chat from './pages/chat';
 import InstructionPage from './pages/instruction';
 import LoginPage from './pages/login.tsx';
 import RegisterPage from './pages/register';
+import UpdatePage from './pages/profile';
 import './App.css'
 import './index.css'
 
@@ -22,6 +23,7 @@ function App() {
 		    <Route path="/instructions" element={<InstructionPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/profile" element={<UpdatePage />} />
       </Routes>
     </Router>
   );
