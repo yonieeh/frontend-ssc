@@ -67,16 +67,16 @@ function Chatbox() {
 
   
   return (
-    <div className="w-full min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col p-4 h-full">
-      <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-2 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
+    <div className="w-full min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-6 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
         {chatMessages.map((message, index) => (
-          <div key={index}>
+          <div key={index} className="chat-message">
             <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
           </div>
         ))}
         <div ref={bottomRef} />
       </div>
-      <div className="flex gap-2 w-full">
+      <div className="flex gap-2 w-full p-4">
         <input
           type="text"
           value={input}

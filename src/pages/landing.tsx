@@ -11,10 +11,19 @@ import groupChat from '../assets/group_chat.jpg'
 import groupChatMobile from '../assets/group_chat_mobile.jpg'
 import friendList from '../assets/friend_list.jpg'
 import friendListMobile from '../assets/friend_list_mobile.jpg';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function LandingPage() {
+  const [pop, setPop] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLogged(true);
+    }
+  }, []);
 
   useEffect(() => {
     audioRef.current = new Audio('/audio.mp3');
@@ -27,6 +36,8 @@ function LandingPage() {
         console.warn('No se pudo reproducir el audio:', err);
       });
     }
+    setPop(true);
+    setTimeout(() => setPop(false), 400);
   };
 
   const LoginButton = () => {
@@ -109,7 +120,7 @@ function LandingPage() {
           <img
             src={stickmanLeaning}
             alt="Stickman leaning"
-            className="w-fit h-auto object-contain cursor-pointer"
+            className={`w-fit h-auto object-contain cursor-pointer ${pop ? 'stickman-pop' : ''}`}
             onClick={handleImageClick}
           />
         </div>
@@ -132,20 +143,24 @@ function LandingPage() {
           />
         </div>
       </div>
+      
+      {!isLogged &&
+        <>
+          <h1 id="call-to-action" className="text-4xl md:text-5xl font-bold text-center font-[Comic_Neue] mb-10 mt-10 text-black">
+            Crea una cuenta y empieza a conocer gente de todo el mundo!
+          </h1>
 
-      <h1 id="call-to-action" className="text-4xl md:text-5xl font-bold text-center font-[Comic_Neue] mb-10 mt-10 text-black">
-        Crea una cuenta y empieza a conocer gente de todo el mundo!
-      </h1>
+          <div className="flex justify-center w-full gap-[15vw] items-center">
+            <LoginButton/>
 
-      <div className="flex justify-center w-full gap-[15vw] items-center">
-        <LoginButton/>
-
-        <button className="group p-0 bg-transparent border-none w-40">
-          <div className="relative w-40 h-fit">
-            <RegisterButton/>
+            <button className="group p-0 bg-transparent border-none w-40">
+              <div className="relative w-40 h-fit">
+                <RegisterButton/>
+              </div>
+            </button>
           </div>
-        </button>
-      </div>
+        </>
+      }
     </div>
   )
 }

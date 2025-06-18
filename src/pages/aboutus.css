@@ -20,6 +20,21 @@ body {
 	margin: 1rem;
 	cursor: pointer;
 	outline: none;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+	transform: translateY(-10px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+	filter: grayscale(100%);
+	transition: filter 0.4s ease-in-out;
+}
+
+.card:hover img {
+	filter: grayscale(0%);
 }
 
 .card-inner {
