@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import Customizer from './customizer';
 
 function ProfileUpdate() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ function ProfileUpdate() {
     contrasena: '',
     confirmarContrasena: ''
   });
+  const [avatarUpdate, setAvatarUpdate] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -40,8 +42,11 @@ function ProfileUpdate() {
         }
         data.contrasena = formData.contrasena.trim();
       }
-      if (Object.keys(data).length === 0) {
+      if (Object.keys(data).length === 0 && !avatarUpdate) {
         alert('Por favor ingresa al menos un campo para actualizar');
+        return;
+      }
+      if (avatarUpdate) {
         return;
       }
       const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, data, {
@@ -114,6 +119,7 @@ function ProfileUpdate() {
           onChange={handleChange} 
           className="p-2 border" 
         />
+        <Customizer onAvatarUpdated={() => setAvatarUpdate(true)}/>
         <button 
           type="submit" 
           className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
