@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import io from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+import { useSocket } from "../context/socketcontext";
 
 
 function Chatbox() {
+  const socket = useSocket();
   const [chatMessages, setChatMessages] = useState<
     { id: number; usuario: { nombre_usuario: string }; contenido: string; }[]
   >([]);
   const [input, setInput] = useState("");
-  const { idSala } = useParams();
+  const { roomID } = useParams();
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!roomID) return;
+    socket.emit('joinRoom', roomID);
+  }, [roomID])
 
   useEffect(() => {
     socket.on('chatMessage', (message) => {
@@ -32,7 +36,7 @@ function Chatbox() {
     const fetchChatMessages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${idSala}`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${roomID}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -45,12 +49,12 @@ function Chatbox() {
     };
 
     fetchChatMessages();
-  }, [idSala]);
+  }, [roomID]);
 
   const sendMessage = async () => {
     if (input.trim() !== "") {
       const token = localStorage.getItem("token");
-      const message = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${idSala}`, {
+      const message = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${roomID}`, {
           contenido: input,
           timestamp: new Date().toISOString(),
           estado: "Enviado"
