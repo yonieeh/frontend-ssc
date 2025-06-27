@@ -64,7 +64,7 @@ function Navbar() {
           <li><a href="/instructions" className="hover:underline">Instrucciones</a></li>
           {isLoggedIn ? (
             <>
-              <li><a href="/chat/1" className="hover:underline">Empieza a chatear!</a></li>
+              <li><a href="/chatlist" className="hover:underline">Empieza a chatear!</a></li>
               <li><a href="/profile" className="hover:underline">Perfil</a></li>
               <li><button onClick={handleLogout} className="hover:underline">Cerrar sesión</button></li>
             </>

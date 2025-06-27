@@ -27,6 +27,7 @@ function Chatbox() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   });
+  
 
   useEffect(() => {
     const fetchChatMessages = async () => {
@@ -37,7 +38,9 @@ function Chatbox() {
             Authorization: `Bearer ${token}`
           }
         });
+        console.log("URL de backend:", import.meta.env.VITE_BACKEND_URL);
         const messages = response.data;
+        console.log("Messages from backend:", messages);
         setChatMessages(messages);
       } catch (error) {
         console.error("Error fetching chat messages:", error);
@@ -64,7 +67,7 @@ function Chatbox() {
       setInput("");
     }
   };
-
+  
   
   return (
     <div className="w-full min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col h-full">
