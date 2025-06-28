@@ -8,11 +8,14 @@ const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 function Chatbox() {
   const [chatMessages, setChatMessages] = useState<
-    { id: number; usuario: { nombre_usuario: string }; contenido: string; }[]
+    { id: number; usuario: { id: number; nombre_usuario: string }; contenido: string; }[]
   >([]);
   const [input, setInput] = useState("");
   const { idSala } = useParams();
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [selectedUser, setSelectedUser] = useState<{ id: number; nombre_usuario: string }>({ id: 0, nombre_usuario: "" });
+  const [showFriendModal, setShowFriendModal] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<string | null>(null);
 
   useEffect(() => {
     socket.on('chatMessage', (message) => {
@@ -71,7 +74,16 @@ function Chatbox() {
       <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-6 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
         {chatMessages.map((message, index) => (
           <div key={index} className="chat-message">
-            <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
+            <strong
+              className="cursor-pointer hover:text-[#2a2a2a] hover:font-bold"
+              onClick={() => {
+                setSelectedUser({id: message.usuario.id, nombre_usuario: message.usuario.nombre_usuario});
+                setShowFriendModal(true);
+                setRequestStatus(null);
+              }}
+            >
+              {message.usuario.nombre_usuario}
+            </strong>: {message.contenido}
           </div>
         ))}
         <div ref={bottomRef} />
@@ -92,6 +104,51 @@ function Chatbox() {
           Enviar
         </button>
       </div>
+      {showFriendModal && selectedUser && (
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full">
+            <h2 className="text-xl font-semibold mb-4 text-black">Enviar solicitud de amistad</h2>
+            <p className="mb-4 text-black">¿Enviar solicitud a <strong>{selectedUser.nombre_usuario}</strong>?</p>
+            {requestStatus && (
+              <p className="text-sm mb-2 text-center text-gray-600">{requestStatus}</p>
+            )}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowFriendModal(false);
+                  setSelectedUser({id: 0, nombre_usuario: ""});
+                }}
+                className="px-4 py-2 bg-red-500 rounded hover:bg-red-700"
+              >
+              Cancelar
+              </button>
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                onClick={async () => {
+                    try {
+                      const token = localStorage.getItem("token");
+                      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/solicitudes`, {
+                          id_usuario2: selectedUser.id
+                        }, {
+                          headers: {
+                          Authorization: `Bearer ${token}`
+                        }
+                      });
+                      setRequestStatus("Solicitud enviada con éxito");
+                      setShowFriendModal(false);
+                      setSelectedUser({id: 0, nombre_usuario: ""});
+                    } catch (err) {
+                      console.error(err);
+                      setRequestStatus("No se pudo enviar la solicitud.");
+                    }
+                  }}
+              >
+              Enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

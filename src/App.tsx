@@ -9,6 +9,7 @@ import InstructionPage from './pages/instruction';
 import LoginPage from './pages/login.tsx';
 import RegisterPage from './pages/register';
 import UpdatePage from './pages/profile';
+import Amistades from './pages/amistades';
 import './App.css'
 import './index.css'
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<UpdatePage />} />
+        <Route path="/friendlist" element={<Amistades />} />
       </Routes>
     </Router>
   );
