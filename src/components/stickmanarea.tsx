@@ -1,19 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import stickman from "../assets/control-stickman.png";
-import { io } from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+import { useSocket } from "../context/socketcontext";
+import { jwtDecode } from "jwt-decode";
 
 type User = {
   id: number;
   x: number; 
   y: number;
+  url: string;
 };
 
 function Stickmanarea() {
+  const socket = useSocket();
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [users, setUsers] = useState<Record<string, User>>({});
   const [position, setPosition] = useState({ x: containerSize.width / 2, y: containerSize.height / 2 });
+  const [myAvatar, setMyAvatar] = useState<string | null>(null);
+  const { roomID } = useParams();
+  const userID = (jwtDecode(localStorage.getItem("token") || "") as { subject: string })?.subject;
   
   const containerRef = useRef<HTMLDivElement>(null);
   const stickmanWidth = containerSize.width * 0.08;
@@ -21,26 +26,51 @@ function Stickmanarea() {
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
+    const fetchAvatar = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/usuarios`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        setMyAvatar(data.avatar);
+      } catch (error) {
+        console.error("Error fetching avatar:", error);
+      }
+    };
+
+    fetchAvatar();
+  }, []);
+
+  useEffect(() => {
+    if (!roomID) return;
+    socket.emit('joinRoom', roomID);
+  }, [roomID])
+
+  useEffect(() => {
     socket.on('existingUsers', (users: User[]) => {
       const userMap: Record<string, User> = {};
       users.forEach((user) => {
-        userMap[user.id] = user;
+        userMap[String(user.id)] = user;
+        console.log(user);
       });
       setUsers(userMap);
     });
 
     socket.on('newUser', (user: User) => {
-      setUsers((prev) => ({ ...prev, [user.id]: user }));
+      setUsers((prev) => ({ ...prev, [String(user.id)]: user }));
     });
 
     socket.on('userMoved', (user: User) => {
-      setUsers((prev) => ({ ...prev, [user.id]: user }));
+      setUsers((prev) => ({ ...prev, [String(user.id)]: user }));
     });
 
     socket.on('userLeft', (id: number) => {
       setUsers((prev) => {
         const newUsers = { ...prev };
-        delete newUsers[id];
+        delete newUsers[String(id)];
         return newUsers;
       });
     })
@@ -104,6 +134,7 @@ function Stickmanarea() {
 
     setPosition({ x: newX, y: newY});
     socket.emit('userMoved', { 
+      roomID,
       x: newX, 
       y: newY
     });
@@ -126,7 +157,7 @@ function Stickmanarea() {
     newY = Math.max(0, Math.min(newY, 1 - stickmanRatioY));
 
     setPosition({ x: newX, y: newY });
-    socket.emit('userMoved', { x: newX, y: newY });
+    socket.emit('userMoved', { roomID, x: newX, y: newY });
   };
 
   return (
@@ -146,31 +177,35 @@ function Stickmanarea() {
           </div>
         </div>
       )}
-      <div
-        className="absolute transition-transform duration-150 ease-out"
-        style={{ 
-          left: position.x * (containerSize.width), 
-          top: position.y * (containerSize.height),
-          width: stickmanWidth,
-          height: stickmanHeight
-        }}
-      >
-        <img src={stickman} alt="User stickman" className="w-full h-full" />
-      </div>
-
-      {Object.entries(users).map(([id, { x, y }]) => (
+      {myAvatar && (
         <div
-          key={id}
           className="absolute transition-transform duration-150 ease-out"
           style={{ 
-            left: x * (containerSize.width), 
-            top: y * (containerSize.height),
+            left: position.x * (containerSize.width), 
+            top: position.y * (containerSize.height),
             width: stickmanWidth,
             height: stickmanHeight
           }}
-        >
-          <img src={stickman} alt="Other stickman" className="w-full h-full" />
+          >
+          <img src={myAvatar || stickman} alt="User stickman" className="w-full h-full" />
         </div>
+      )}
+
+      {Object.entries(users)
+        .filter(([id]) => id !== userID)
+        .map(([id, { x, y, url }]) => (
+          <div
+            key={id}
+            className="absolute transition-transform duration-150 ease-out"
+            style={{ 
+              left: x * (containerSize.width), 
+              top: y * (containerSize.height),
+              width: stickmanWidth,
+              height: stickmanHeight
+            }}
+          >
+            <img src={url || stickman} alt="Other stickman" className="w-full h-full" />
+          </div>
       ))}
     </div>
   )
