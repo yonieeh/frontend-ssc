@@ -2,18 +2,31 @@ import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import jwt_decode from "jwt-decode"; // instalar esto: npm install jwt-decode
+
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
+  const token = localStorage.getItem('token');
+  if (token) {
+    setIsLoggedIn(true);
+    try {
+      const decoded: any = jwt_decode(token);
+      if (decoded.scope && decoded.scope.includes('admin')) {
+        setIsAdmin(true);
+      }
+    } catch (err) {
+      console.error("Error decoding token:", err);
     }
-  }, []);
+  }
+}, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -66,6 +79,8 @@ function Navbar() {
             <>
               <li><a href="/chat/1" className="hover:underline">Empieza a chatear!</a></li>
               <li><a href="/profile" className="hover:underline">Perfil</a></li>
+              {isAdmin && (<li><a href="/admin" className="hover:underline">Admin Panel</a></li>)}
+
               <li><button onClick={handleLogout} className="hover:underline">Cerrar sesión</button></li>
             </>
           ) : (
@@ -84,6 +99,7 @@ function Navbar() {
           {isLoggedIn ? (
             <>
               <a href="/chat/1" onClick={() => setIsOpen(false)} className="hover:underline">Empieza a chatear!</a>
+              {isAdmin && (<a href="/admin" onClick={() => setIsOpen(false)} className="hover:underline">Admin Panel</a>)}
               <button onClick={() => { handleLogout(); setIsOpen(false); }} className="hover:underline">Cerrar sesión</button>
             </>
           ) : (
