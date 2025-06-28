@@ -14,6 +14,7 @@ import CreateChat from './pages/create-chat.tsx';
 import Amistades from './pages/amistades';
 import './App.css'
 import './index.css'
+import AdminPanel from './pages/AdminPanel';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<UpdatePage />} />
+		    <Route path="/admin" element={<AdminPanel />} />
         <Route path="/friendlist" element={<Amistades />} />
       </Routes>
     </Router>

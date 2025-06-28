@@ -22,10 +22,12 @@ const LoginForm = () => {
 			const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData);
 			const result = await response.data;
 
+			// Modifique este if para el scope; Javi
 			if (response.status === 200) {
 				alert('Iniciaste sesión con éxito!');
 				localStorage.setItem('token', result.access_token);
 				localStorage.setItem('username', result.username);
+				localStorage.setItem('scope', JSON.stringify(result.scope));
 				navigate('/');
 			} else {
 				alert(`Fallo en el inicio de sesión: ${result.message}`);
