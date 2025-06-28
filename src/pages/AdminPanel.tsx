@@ -2,10 +2,28 @@ import Navbar from '../components/Navbar';
 import UserList from '../components/UserList';
 import RoomList from '../components/RoomList';
 import MessageList from '../components/MessageList';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 function AdminPanel() {
+  const navigate = useNavigate();
   // token para autorización
   const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    const decodedToken: { scope: string[] } = jwtDecode(token);
+    
+    if (!decodedToken.scope.includes('admin')) {
+      navigate('/');
+      return;
+    }
+  }, [])
 
   return (
   <div
