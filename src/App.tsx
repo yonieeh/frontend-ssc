@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<LandingPage />} />
-        <Route path="/chat/:idSala" element={<Chat />} />
+        <Route path="/chat/:roomID" element={<Chat />} />
 		    <Route path="/instructions" element={<InstructionPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
