@@ -2,7 +2,7 @@ import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import jwt_decode from "jwt-decode"; // instalar esto: npm install jwt-decode
+import { jwtDecode } from "jwt-decode"; // instalar esto: npm install jwt-decode
 
 
 function Navbar() {
@@ -17,7 +17,7 @@ function Navbar() {
   if (token) {
     setIsLoggedIn(true);
     try {
-      const decoded: any = jwt_decode(token);
+      const decoded: any = jwtDecode(token);
       if (decoded.scope && decoded.scope.includes('admin')) {
         setIsAdmin(true);
       }

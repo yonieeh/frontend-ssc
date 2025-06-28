@@ -5,6 +5,9 @@ interface User {
   id: number;
   nombre_usuario: string;
   correo: string;
+  rol: {
+    nombre_rol: string;
+  }
 }
 
 interface UserListProps {
@@ -15,6 +18,7 @@ function UserList({ token }: UserListProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -52,33 +56,42 @@ function UserList({ token }: UserListProps) {
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <table className="table-auto w-full text-left font-[Comic_Sans_MS]">
-      <thead>
-        <tr>
-          <th className="border px-2 py-1">ID</th>
-          <th className="border px-2 py-1">Usuario</th>
-          <th className="border px-2 py-1">Correo</th>
-          <th className="border px-2 py-1">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map(user => (
-          <tr key={user.id}>
-            <td className="border px-2 py-1">{user.id}</td>
-            <td className="border px-2 py-1">{user.nombre_usuario}</td>
-            <td className="border px-2 py-1">{user.correo}</td>
-            <td className="border px-2 py-1">
-              <button
-                onClick={() => handleDeleteUser(user.id)}
-                className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
-              >
-                Eliminar
-              </button>
-            </td>
+    <>
+      <input
+        type="text"
+        placeholder="Buscar usuario..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        className="mb-4 border border-gray-300 px-2 py-1 rounded text-black font-[Comic_Sans_MS] w-full"
+      />
+      <table className="table-auto w-full text-left text-black font-[Comic_Sans_MS]">
+        <thead>
+          <tr>
+            <th className="border px-2 py-1">ID</th>
+            <th className="border px-2 py-1">Usuario</th>
+            <th className="border px-2 py-1">Correo</th>
+            <th className="border px-2 py-1">Acciones</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {users.filter(user => user.rol.nombre_rol !== 'admin' && user.nombre_usuario.toLowerCase().includes(search.toLowerCase())).map(user => (
+            <tr key={user.id}>
+              <td className="border px-2 py-1">{user.id}</td>
+              <td className="border px-2 py-1">{user.nombre_usuario}</td>
+              <td className="border px-2 py-1">{user.correo}</td>
+              <td className="border px-2 py-1">
+                <button
+                  onClick={() => handleDeleteUser(user.id)}
+                  className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                  >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }
 
