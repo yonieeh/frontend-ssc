@@ -11,6 +11,7 @@ import LoginPage from './pages/login.tsx';
 import RegisterPage from './pages/register';
 import UpdatePage from './pages/profile';
 import CreateChat from './pages/create-chat.tsx';
+import Amistades from './pages/amistades';
 import './App.css'
 import './index.css'
 
@@ -21,13 +22,14 @@ function App() {
       <Routes>
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<LandingPage />} />
-        <Route path="/chat/:idSala" element={<Chat />} />
         <Route path="/chatlist" element={<Chatlist />} />
         <Route path="create-chat" element={<CreateChat />} />
+        <Route path="/chat/:roomID" element={<Chat />} />
 		    <Route path="/instructions" element={<InstructionPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<UpdatePage />} />
+        <Route path="/friendlist" element={<Amistades />} />
       </Routes>
     </Router>
   );
