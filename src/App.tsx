@@ -11,6 +11,7 @@ import RegisterPage from './pages/register';
 import UpdatePage from './pages/profile';
 import './App.css'
 import './index.css'
+import AdminPanel from './pages/AdminPanel';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<UpdatePage />} />
+		<Route path="/admin" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
