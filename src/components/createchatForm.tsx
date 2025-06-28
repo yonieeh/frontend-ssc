@@ -1,24 +1,31 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function CrearSalaForm(){
-    const [nombreSala, setNombreSala] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const [nombreSala, setNombreSala] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!nombreSala.trim()) {
-            setError("El nombre no puede estar vacío");
-            return;
-        }
-        try {
-           const token = localStorage.getItem("token");
-      const res = await axios.post(
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombreSala.trim()) {
+      setError("El nombre no puede estar vacío");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      const decoded = token ? jwtDecode(token) as any : {};
+      const userID = decoded.subject ?? null;
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/salas`,
-        { nombre: nombreSala, password: password || null },
+        { 
+          nombre: nombreSala, 
+          contrasena: password,
+          id_creador: userID
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,7 +37,7 @@ function CrearSalaForm(){
       console.error("Error creando sala:", err);
       setError("Ocurrió un error al crear la sala.");
     }
-  };
+};
 
    return (
     <div className="flex items-center justify-center h-full px-4">
@@ -44,7 +51,7 @@ function CrearSalaForm(){
 
         <label
           htmlFor="nombre"
-          className="block mb-2 text-sm font-semibold text-gray-700"
+          className="block mb-2 text-md font-bold text-black font-[Comic_Neue]"
         >
           Nombre de la sala
         </label>
