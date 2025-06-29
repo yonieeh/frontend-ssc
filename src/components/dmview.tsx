@@ -10,10 +10,13 @@ function DirectMessageView() {
       <div
         className={`
           ${selectedFriendshipID ? "hidden" : "block"}
-          md:block md:w-1/3 border-r border-gray-300 overflow-y-auto
+          md:block md:w-1/3 lg:border-r-4 lg:border-t-4 border-black overflow-y-auto
         `}
       >
-        <FriendList onSelectFriend={setSelectedFriendshipID} />
+        <FriendList 
+          onSelectFriend={setSelectedFriendshipID}
+          selectedFriendshipID={selectedFriendshipID} 
+        />
       </div>
 
       <div

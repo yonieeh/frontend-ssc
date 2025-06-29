@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axios from "../config/axiosconfig";
+import { useSocket } from "../context/socketcontext";
+import "./directchat.css";  
 
 interface DirectChatProps {
   friendshipID: number | null;
@@ -15,8 +17,10 @@ interface Message {
 }
 
 function DirectChat({ friendshipID }: DirectChatProps) {
+  const socket = useSocket();
   const [message, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const token = localStorage.getItem("token");
 
@@ -40,6 +44,24 @@ function DirectChat({ friendshipID }: DirectChatProps) {
   }, [friendshipID]);
 
   useEffect(() => {
+    if (friendshipID) {
+      socket.emit('joinDM', friendshipID);
+    }
+  }, [friendshipID])
+
+  useEffect(() => {
+    const handleRecieveMessage = (msg: Message) => {
+      setMessages((prev) => [...prev, msg]);
+    };
+
+    socket.on('DM', handleRecieveMessage);
+    return () => {
+      socket.off('DM', handleRecieveMessage);
+    };
+
+  }, []);
+
+  useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -49,6 +71,7 @@ function DirectChat({ friendshipID }: DirectChatProps) {
     if (!input.trim() || !friendshipID) return;
 
     try {
+      setLoading(true);
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajedirecto/${friendshipID}`, {
         contenido: input,
         timestamp: new Date().toISOString()
@@ -57,10 +80,12 @@ function DirectChat({ friendshipID }: DirectChatProps) {
           Authorization: `Bearer ${token}`
         }
       });
-      setMessages((prev) => [...prev, response.data]);
+      socket.emit('DM', {friendshipID, ...response.data});
       setInput("");
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -73,10 +98,10 @@ function DirectChat({ friendshipID }: DirectChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#f5f5f5]">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full pt-12 md:pt-4">
+    <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full pt-12 md:pt-4 md:pl-5">
         {message.map((msg) => (
-          <div key={msg.id} className="mb-2 text-black">
+          <div key={msg.id} className="mb-2 text-black chat-message p">
             <strong>{msg.usuario.nombre_usuario}:</strong> {msg.contenido}
           </div>
         ))}
@@ -92,12 +117,14 @@ function DirectChat({ friendshipID }: DirectChatProps) {
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           className="flex-1 border border-gray-300 p-2 text-black"
         />
-        <button
-          onClick={sendMessage}
-          className="bg-white text-black hover:bg-black hover:text-white px-4 py-2"
-        >
-          Send
-        </button>
+        {!loading && (
+          <button
+            onClick={sendMessage}
+            className="bg-white text-black hover:bg-black hover:text-white border-2 border-black px-4 py-2"
+          >
+            Enviar
+          </button>
+        )}
       </div>
     </div>
   );

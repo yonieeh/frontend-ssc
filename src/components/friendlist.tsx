@@ -1,18 +1,92 @@
 import { useState, useEffect, Fragment } from "react";
-import axios from "axios";
+import axios from "../config/axiosconfig";
 import { Dialog, Transition } from "@headlessui/react";
+import { useSocket } from "../context/socketcontext";
+import { jwtDecode } from "jwt-decode";
+import dayjs from "dayjs";  
+import realtiveTime from "dayjs/plugin/relativeTime";
+import locale from "dayjs/locale/es";
+dayjs.extend(realtiveTime);
+dayjs.locale(locale);
 
-function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }) {
+function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: (id: number | null) => void; selectedFriendshipID: number | null }) {
+  const socket = useSocket();
   const [friends, setFriends] = useState<any[]>([]);
   const [requests, setRequests] = useState<{ sent: any[], received: any[] }>({ sent: [], received: [] });
   const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<any[]>([]);
+  const [isUnfriending, setIsUnfriending] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const token = localStorage.getItem("token");
+  const userID = (token) ? parseInt((jwtDecode(token) as { subject: string }).subject) : null;
 
   useEffect(() => {
     fetchFriends();
-    console.log(friends);
     fetchRequests();
+    fetchStatus();
   }, []);
+
+  useEffect(() => {
+    if (userID) {
+      socket.emit("openFriendList", userID);
+    }
+
+    return () => {
+      if (userID) {
+        socket.emit("closeFriendList", userID);
+      }
+    }
+  }, [userID]);
+
+  useEffect(() => {
+    socket.on("refreshFriendList", () => {
+      fetchFriends();
+      fetchStatus();
+    });
+
+    socket.on("refreshFriendRequests", () => {
+      fetchRequests();
+    });
+
+    return () => {
+      socket.off("refreshFriendList");
+      socket.off("refreshFriendRequests");
+    }
+  })
+
+  useEffect(() => {
+
+    const handleUnfriend = ({ id_amistad } : { id_amistad: number }) => {
+      if (selectedFriendshipID === id_amistad) {
+        onSelectFriend(null);
+      }
+      fetchFriends();
+    };
+
+    socket.on("friendRemoved", handleUnfriend);
+
+    return () => {
+      socket.off("friendRemoved", handleUnfriend);
+    }
+  }, [socket, selectedFriendshipID, onSelectFriend]);
+
+  const fetchStatus = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/estados`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status !== 200) {
+        throw new Error("Error al obtener status");
+      }
+      console.log(response.data);
+      setStatus(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const fetchFriends = async () => {
     try {
@@ -64,6 +138,7 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
 
   const acceptRequest = async (id: number) => {
     try {
+      setLoading(true);
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/${id}/aceptar`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -72,15 +147,20 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
       if (response.status !== 200) {
         throw new Error("Error al aceptar solicitud");
       }
+      socket.emit("acceptFriendRequest", response.data.id_usuario1);
       fetchFriends();
       fetchRequests();
+      fetchStatus();
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const declineRequest = async (id: number) => {
     try {
+      setLoading(true);
       const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/${id}/rechazar`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -89,15 +169,19 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
       if (response.status !== 200) {
         throw new Error("Error al rechazar solicitud");
       }
+      socket.emit("declineFriendRequest", response.data.id_usuario1);
       fetchFriends();
       fetchRequests();
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const cancelRequest = async (id: number) => {
     try {
+      setCancelling(true);
       const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/${id}/cancelar`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -106,14 +190,18 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
       if (response.status !== 200) {
         throw new Error("Error al cancelar solicitud");
       }
+      socket.emit("cancelFriendRequest", response.data.id_usuario2);
       fetchRequests();
     } catch (err) {
       console.error(err);
+    } finally {
+      setCancelling(false);
     }
   };
 
   const handleRemoveFriend = async (id: number) => {
     try {
+      setIsUnfriending(true);
       const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/amistades/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -122,9 +210,16 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
       if (response.status !== 200) {
         throw new Error("Error al eliminar amigo");
       }
+      if (parseInt(response.data.id_usuario1) === userID) {
+        socket.emit("unfriend", response.data.id_usuario2, id);
+      } else {
+        socket.emit("unfriend", response.data.id_usuario1, id);
+      }
       fetchFriends();
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsUnfriending(false);
     }
   };
 
@@ -132,23 +227,61 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
     <div className="w-full h-full p-4 bg-transparent overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl font-bold text-black font-[Comic_Neue]">Amigos</h2>
-        <button onClick={() => setOpen(true)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 hover:text-black transition duration-300 ease-in-out">
+        <button onClick={() => setOpen(true)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 border-black transition duration-300 ease-in-out">
           Solicitudes
         </button>
       </div>
 
       <ul className="space-y-2">
-        {friends.map((friend) => (
-          <li key={friend.id_usuario} className="p-2 bg-gray-100 hover:bg-gray-400 rounded-md flex flex-row justify-between items-center">
-            <div className="flex items-center" onClick={() => onSelectFriend(friend.id_amistad)}>
-              <img src={friend.url_avatar} alt={friend.nombre_usuario} className="w-8 h-8 rounded-full text-black" />
-              <span className="ml-2 text-black font-bold font-[Comic_Sans_MS]">{friend.nombre_usuario}</span>
-            </div>
-            <button onClick={() => handleRemoveFriend(friend.id_amistad)} className="text-red-500 px-4 py-2 rounded-md hover:text-red-800 transition duration-300 ease-in-out">
-              Eliminar
-            </button>
-          </li>
-        ))}
+        {friends.map((friend) => {
+          const friendStatus = status.find((status) => status.usuario.id === friend.id_usuario);
+
+          return (
+            <li 
+              key={friend.id_usuario} 
+              className="p-2 bg-gray-100 hover:bg-gray-400 rounded-md flex flex-row justify-between items-center" 
+              onClick={() => {
+                if (selectedFriendshipID === friend.id_amistad) {
+                  onSelectFriend(null);
+                } else {
+                  onSelectFriend(friend.id_amistad);
+                }
+              }}
+            >
+              <div className="flex items-center">
+                <img src={friend.url_avatar} alt={friend.nombre_usuario} className="w-8 h-8 rounded-full text-black mr-2" />
+                <div className="flex flex-col">
+                  <span className="ml-2 text-black font-bold font-[Comic_Sans_MS] text-left">{friend.nombre_usuario}</span>
+                  {friendStatus && (
+                    friendStatus.nombre_estado === "En linea" ? (
+                      <p className="text-sm text-green-600 font-semibold font-[Comic_Sans_MS] ml-2">🟢 En línea</p>
+                    ) : (
+                      <p className="text-sm text-gray-600 italic ml-2">
+                        Última conexión {dayjs(friendStatus.ultima_act).fromNow()}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+              {!isUnfriending && (
+                <button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const result = window.confirm('¿Seguro que quieres eliminar a este amigo?');
+                    if (!result) return;
+                    handleRemoveFriend(friend.id_amistad);
+                    onSelectFriend(null);
+                    selectedFriendshipID = null;
+                  }} 
+                  className="text-red-500 px-4 py-2 rounded-md hover:text-red-800 transition duration-300 ease-in-out"
+                >
+                  Eliminar
+                </button>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <Transition appear show={open} as={Fragment}>
@@ -165,12 +298,16 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
                     <span className="text-black">{request.remitente.nombre_usuario}</span>
                     <div className="flex gap-2">
-                      <button onClick={() => acceptRequest(request.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 hover:text-black transition duration-300 ease-in-out">
-                        Aceptar
-                      </button>
-                      <button onClick={() => declineRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
-                        Rechazar
-                      </button>
+                      {!loading && (
+                        <>
+                          <button onClick={() => acceptRequest(request.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 hover:text-black transition duration-300 ease-in-out">
+                            Aceptar
+                          </button>
+                          <button onClick={() => declineRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
+                            Rechazar
+                          </button>
+                        </>  
+                      )}
                     </div>
                   </div>
                 ))}
@@ -182,9 +319,11 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (id: number) => void }
                 {requests.sent.map((request) => (
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
                     <span className="text-black">{request.destinatario.nombre_usuario}</span>
-                    <button onClick={() => cancelRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
-                      Cancelar
-                    </button>
+                    {!cancelling && (
+                      <button onClick={() => cancelRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
+                        Cancelar
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
