@@ -23,7 +23,7 @@ function AdminPanel() {
       navigate('/');
       return;
     }
-  }, [])
+  }, [token, navigate]);
 
   return (
   <div

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 
 function Chatlist() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState<{ id: number; nombre: string, id_creador: number, contrasena: string | null } | null>(null);
   const [password, setPassword] = useState("");
@@ -15,16 +16,18 @@ function Chatlist() {
   const [chats, setChats] = useState<{ id: number; nombre: string, id_creador: number, contrasena: string | null }[]>([]);
   const [deleting, setDeleting] = useState<{ [key: number]: boolean }>({});
   const token = localStorage.getItem("token");
-  const decoded = token ? jwtDecode(token) as any : {};
-  const userID = decoded.subject ?? null;
-  const scopes: string[] = Array.isArray(decoded.scopes) ? decoded.scopes : [];
-  const navigate = useNavigate();
+  if (!token) {
+    navigate("/");
+  }
+  const decoded = jwtDecode(token ?? "") as { subject: string, scopes: string[] };
+  const userID = decoded?.subject ?? null;
+  const scopes: string[] = Array.isArray(decoded?.scopes) ? decoded.scopes : [];
 
   useEffect(() => {
     if (!localStorage.getItem('token')) {
       navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
 
   useEffect(() => {
@@ -159,7 +162,7 @@ function Chatlist() {
                       } else {
                         setError("Contraseña incorrecta");
                       }
-                    } catch (err) {
+                    } catch {
                       setError("Error al verificar la contraseña.");
                     }
                   }}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import stickman from "../assets/control-stickman.png";
-import { useSocket } from "../context/socketcontext";
+import { useSocket } from "../context/socketcontext-utils";
 import { jwtDecode } from "jwt-decode";
 
 type User = {
@@ -97,7 +97,7 @@ function Stickmanarea() {
   useEffect(() => {
     if (!roomID) return;
     socket.emit('joinRoom', roomID);
-  }, [roomID])
+  }, [roomID, socket])
 
   useEffect(() => {
     socket.on('existingUsers', (users: User[]) => {
@@ -131,7 +131,7 @@ function Stickmanarea() {
       socket.off('userMoved');
       socket.off('userLeft');
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const updateSize = () => {

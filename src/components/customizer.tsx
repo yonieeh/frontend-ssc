@@ -102,7 +102,7 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
         clientX: touch.clientX,
         clientY: touch.clientY
       } as MouseEvent);
-    }), { passive: false };
+    }, { passive: false });
 
     canvas.addEventListener("touchmove", (e) => {
       e.preventDefault();
@@ -128,8 +128,8 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", stopDrawing);
       canvas.removeEventListener("mouseout", stopDrawing);
-      canvas.removeEventListener("touchstart", startDrawing as any);
-      canvas.removeEventListener("touchmove", draw as any);
+      canvas.removeEventListener("touchstart", startDrawing as EventListenerOrEventListenerObject);
+      canvas.removeEventListener("touchmove", draw as EventListenerOrEventListenerObject);
       canvas.removeEventListener("touchend", stopDrawing);
       canvas.removeEventListener("touchcancel", stopDrawing);
     };

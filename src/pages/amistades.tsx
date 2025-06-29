@@ -11,7 +11,7 @@ function Amistades() {
     if (!localStorage.getItem('token')) {
       navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="flex flex-col h-full w-full" style={{ backgroundImage: "url('/comic.png')" }}>

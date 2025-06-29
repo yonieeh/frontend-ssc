@@ -17,7 +17,7 @@ function Navbar() {
   if (token) {
     setIsLoggedIn(true);
     try {
-      const decoded: any = jwtDecode(token);
+      const decoded = jwtDecode(token) as { scope: string[] };
       if (decoded.scope && decoded.scope.includes('admin')) {
         setIsAdmin(true);
       }

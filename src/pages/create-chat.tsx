@@ -10,7 +10,7 @@ function CreateChat () {
     if (!localStorage.getItem('token')) {
       navigate('/');
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="flex flex-col h-screen w-full" style={{ backgroundImage: "url('/comic.png')" }}>

@@ -19,7 +19,12 @@ function CrearSalaForm(){
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const decoded = token ? jwtDecode(token) as any : {};
+      if (!token) {
+        setError("No estas loggeado");
+        navigate("/login");
+        return;
+      }
+      const decoded = jwtDecode(token) as { subject: string };
       const userID = decoded.subject ?? null;
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/salas`,

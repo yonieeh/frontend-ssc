@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "../config/axiosconfig";
-import { useSocket } from "../context/socketcontext";
+import { useSocket } from "../context/socketcontext-utils";
 import "./directchat.css";  
 
 interface DirectChatProps {
@@ -41,13 +41,13 @@ function DirectChat({ friendshipID }: DirectChatProps) {
     };
 
     fetchMessages();
-  }, [friendshipID]);
+  }, [friendshipID, token]);
 
   useEffect(() => {
     if (friendshipID) {
       socket.emit('joinDM', friendshipID);
     }
-  }, [friendshipID])
+  }, [friendshipID, socket]);
 
   useEffect(() => {
     const handleRecieveMessage = (msg: Message) => {
@@ -59,7 +59,7 @@ function DirectChat({ friendshipID }: DirectChatProps) {
       socket.off('DM', handleRecieveMessage);
     };
 
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (bottomRef.current) {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "../config/axiosconfig";
 import { useParams } from "react-router-dom";
-import { useSocket } from "../context/socketcontext";
+import { useSocket } from "../context/socketcontext-utils";
 import { jwtDecode } from "jwt-decode";
 
 
@@ -55,11 +55,11 @@ function Chatbox() {
         })
       ]);
 
-      const sentRequests = sent.data.map((request: any) => ({
+      const sentRequests = sent.data.map((request: { destinatario: { id: number }}) => ({
         id: request.destinatario.id
       }));
 
-      const receivedRequests = received.data.map((request: any) => ({
+      const receivedRequests = received.data.map((request: { remitente: { id: number }}) => ({
         id: request.remitente.id
       }));
 
@@ -77,7 +77,7 @@ function Chatbox() {
   useEffect(() => {
     if (!roomID) return;
     socket.emit('joinRoom', roomID);
-  }, [roomID])
+  }, [roomID, socket])
 
   useEffect(() => {
     socket.on('chatMessage', (message) => {
@@ -87,7 +87,7 @@ function Chatbox() {
     return () => {
       socket.off('chatMessage');
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

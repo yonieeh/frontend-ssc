@@ -1,7 +1,7 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback } from "react";
 import axios from "../config/axiosconfig";
 import { Dialog, Transition } from "@headlessui/react";
-import { useSocket } from "../context/socketcontext";
+import { useSocket } from "../context/socketcontext-utils";
 import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";  
 import realtiveTime from "dayjs/plugin/relativeTime";
@@ -9,23 +9,49 @@ import locale from "dayjs/locale/es";
 dayjs.extend(realtiveTime);
 dayjs.locale(locale);
 
+interface Usuario {
+  id: number;
+  nombre_usuario: string;
+  correo?: string;
+  id_avatar?: number;
+  url_avatar?: string;
+}
+
+interface Estado {
+  id: number;
+  id_usuario: number;
+  nombre_estado: string;
+  ultima_act: string;
+  usuario: Usuario;
+}
+
+interface Amistad {
+  id_amistad: number;
+  id_usuario: number;
+  nombre_usuario: string;
+  url_avatar: string;
+}
+
+interface Solicitud {
+  id: number;
+  id_usuario1: number;
+  id_usuario2: number;
+  estado: string;
+  remitente?: Usuario;
+  destinatario?: Usuario;
+}
+
 function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: (id: number | null) => void; selectedFriendshipID: number | null }) {
   const socket = useSocket();
-  const [friends, setFriends] = useState<any[]>([]);
-  const [requests, setRequests] = useState<{ sent: any[], received: any[] }>({ sent: [], received: [] });
+  const [friends, setFriends] = useState<Amistad[]>([]);
+  const [requests, setRequests] = useState<{ sent: Solicitud[], received: Solicitud[] }>({ sent: [], received: [] });
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<any[]>([]);
+  const [status, setStatus] = useState<Estado[]>([]);
   const [isUnfriending, setIsUnfriending] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const token = localStorage.getItem("token");
   const userID = (token) ? parseInt((jwtDecode(token) as { subject: string }).subject) : null;
-
-  useEffect(() => {
-    fetchFriends();
-    fetchRequests();
-    fetchStatus();
-  }, []);
 
   useEffect(() => {
     if (userID) {
@@ -37,58 +63,43 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
         socket.emit("closeFriendList", userID);
       }
     }
-  }, [userID]);
+  }, [userID, socket]);
 
-  useEffect(() => {
-    socket.on("refreshFriendList", () => {
-      fetchFriends();
-      fetchStatus();
-    });
-
-    socket.on("refreshFriendRequests", () => {
-      fetchRequests();
-    });
-
-    return () => {
-      socket.off("refreshFriendList");
-      socket.off("refreshFriendRequests");
-    }
-  })
-
-  useEffect(() => {
-
-    const handleUnfriend = ({ id_amistad } : { id_amistad: number }) => {
-      if (selectedFriendshipID === id_amistad) {
-        onSelectFriend(null);
-      }
-      fetchFriends();
-    };
-
-    socket.on("friendRemoved", handleUnfriend);
-
-    return () => {
-      socket.off("friendRemoved", handleUnfriend);
-    }
-  }, [socket, selectedFriendshipID, onSelectFriend]);
-
-  const fetchStatus = async () => {
+  const fetchStatus = useCallback(async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/estados`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.status !== 200) {
-        throw new Error("Error al obtener status");
-      }
-      console.log(response.data);
+      if (response.status !== 200) throw new Error("Error al obtener status");
       setStatus(response.data);
     } catch (err) {
       console.error(err);
     }
-  }
+  }, [token]);
 
-  const fetchFriends = async () => {
+  const fetchRequests = useCallback(async () => {
+    try {
+      const requests = { sent: [], received: [] };
+      const sentRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/enviadas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const recvRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/recibidas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (sentRes.status !== 200 || recvRes.status !== 200)
+        throw new Error("Error al obtener solicitudes");
+
+      requests.sent = sentRes.data;
+      requests.received = recvRes.data;
+      setRequests(requests);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [token]);
+
+
+
+  const fetchFriends = useCallback(async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/amistades`, {
         headers: {
@@ -103,38 +114,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const fetchRequests = async () => {
-    try {
-      const requests = {
-        sent: [],
-        received: []
-      };
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/enviadas`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (response.status !== 200) {
-        throw new Error("Error al obtener solicitudes enviadas");
-      }
-      requests.sent = response.data;
-      const response2 = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/recibidas`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (response2.status !== 200) {
-        throw new Error("Error al obtener solicitudes recibidas");
-      }
-      requests.received = response2.data;
-      console.log(requests);
-      setRequests(requests);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  }, [token]);
 
   const acceptRequest = async (id: number) => {
     try {
@@ -223,6 +203,47 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
     }
   };
 
+  useEffect(() => {
+    fetchFriends();
+    fetchRequests();
+    fetchStatus();
+  }, [fetchFriends, fetchRequests, fetchStatus]);
+
+  useEffect(() => {
+    function handleUnfriend({ id_amistad }: { id_amistad: number }) {
+      if (selectedFriendshipID === id_amistad) {
+        onSelectFriend(null);
+      }
+
+      fetchFriends();
+    }
+
+    socket.on("friendRemoved", handleUnfriend);
+
+    return () => {
+      socket.off("friendRemoved", handleUnfriend);
+    }
+  }, [socket, selectedFriendshipID, onSelectFriend, fetchFriends]);
+
+  useEffect(() => {
+    const handleRefreshFriendList = () => {
+      fetchFriends();
+      fetchStatus();
+    };
+
+    const handleRefreshFriendRequests = () => {
+      fetchRequests();
+    }
+    socket.on("refreshFriendList", handleRefreshFriendList);
+
+    socket.on("refreshFriendRequests", handleRefreshFriendRequests);
+
+    return () => {
+      socket.off("refreshFriendList", handleRefreshFriendList);
+      socket.off("refreshFriendRequests", handleRefreshFriendRequests);
+    }
+  }, [socket, fetchFriends, fetchRequests, fetchStatus]);
+
   return (
     <div className="w-full h-full p-4 bg-transparent overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
@@ -296,7 +317,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
                 {requests.received.length === 0 && <p className="text-sm text-gray-600">No tienes solicitudes nuevas.</p>}
                 {requests.received.map((request) => (
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
-                    <span className="text-black">{request.remitente.nombre_usuario}</span>
+                    <span className="text-black">{request.remitente?.nombre_usuario ?? "Usuario desconocido"}</span>
                     <div className="flex gap-2">
                       {!loading && (
                         <>
@@ -318,7 +339,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
                 {requests.sent.length === 0 && <p className="text-sm text-gray-600">No has enviados solicitudes nuevas.</p>}
                 {requests.sent.map((request) => (
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
-                    <span className="text-black">{request.destinatario.nombre_usuario}</span>
+                    <span className="text-black">{request.destinatario?.nombre_usuario ?? "Usuario desconocido"}</span>
                     {!cancelling && (
                       <button onClick={() => cancelRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
                         Cancelar
