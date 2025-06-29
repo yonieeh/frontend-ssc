@@ -2,15 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { SocketContext } from './context/socketcontext';
-import socket from './socket';
-
-socket.connect();
+import { SocketProvider } from './context/socketcontext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <SocketContext.Provider value={socket}>
+    <SocketProvider>
       <App />
-    </SocketContext.Provider>
+    </SocketProvider>
   </StrictMode>,
 )
