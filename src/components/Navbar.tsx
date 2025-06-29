@@ -80,7 +80,7 @@ function Navbar() {
               <li><a href="/friendlist" className="hover:underline">Amigos</a></li>
               <li><a href="/chatlist" className="hover:underline">Empieza a chatear!</a></li>
               <li><a href="/profile" className="hover:underline">Perfil</a></li>
-              {isAdmin && (<li><a href="/admin" className="hover:underline">Admin Panel</a></li>)}
+              {isAdmin && (<li><a href="/admin" className="hover:underline">Admin</a></li>)}
 
               <li><button onClick={handleLogout} className="hover:underline">Cerrar sesión</button></li>
             </>
@@ -99,7 +99,7 @@ function Navbar() {
           <a href="/instructions" onClick={() => setIsOpen(false)} className="hover:underline">Instrucciones</a>
           {isLoggedIn ? (
             <>
-              {isAdmin && (<a href="/admin" onClick={() => setIsOpen(false)} className="hover:underline">Admin Panel</a>)}
+              {isAdmin && (<a href="/admin" onClick={() => setIsOpen(false)} className="hover:underline">Admin</a>)}
               <a href="/friendlist" onClick={() => setIsOpen(false)} className="hover:underline">Amigos</a>
               <a href="/chatlist" onClick={() => setIsOpen(false)} className="hover:underline">Empieza a chatear!</a>
               <a href="/profile" onClick={() => setIsOpen(false)} className="hover:underline">Perfil</a>
