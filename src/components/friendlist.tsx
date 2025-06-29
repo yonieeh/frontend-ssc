@@ -41,7 +41,7 @@ interface Solicitud {
   destinatario?: Usuario;
 }
 
-function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: (id: number | null) => void; selectedFriendshipID: number | null }) {
+function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: (id: number | null, friendName: string, friendAvatar: string) => void; selectedFriendshipID: number | null }) {
   const socket = useSocket();
   const [friends, setFriends] = useState<Amistad[]>([]);
   const [requests, setRequests] = useState<{ sent: Solicitud[], received: Solicitud[] }>({ sent: [], received: [] });
@@ -52,6 +52,8 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
   const [cancelling, setCancelling] = useState(false);
   const token = localStorage.getItem("token");
   const userID = (token) ? parseInt((jwtDecode(token) as { subject: string }).subject) : null;
+
+
 
   useEffect(() => {
     if (userID) {
@@ -110,7 +112,6 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
         throw new Error("Error al obtener amigos");
       }
       setFriends(response.data);
-      console.log(response.data);
     } catch (err) {
       console.error(err);
     }
@@ -212,7 +213,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
   useEffect(() => {
     function handleUnfriend({ id_amistad }: { id_amistad: number }) {
       if (selectedFriendshipID === id_amistad) {
-        onSelectFriend(null);
+        onSelectFriend(null, "", "");
       }
 
       fetchFriends();
@@ -263,9 +264,9 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
               className="p-2 bg-gray-100 hover:bg-gray-400 rounded-md flex flex-row justify-between items-center" 
               onClick={() => {
                 if (selectedFriendshipID === friend.id_amistad) {
-                  onSelectFriend(null);
+                  onSelectFriend(null, "", "");
                 } else {
-                  onSelectFriend(friend.id_amistad);
+                  onSelectFriend(friend.id_amistad, friend.nombre_usuario, friend.url_avatar);
                 }
               }}
             >
@@ -292,7 +293,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
                     const result = window.confirm('¿Seguro que quieres eliminar a este amigo?');
                     if (!result) return;
                     handleRemoveFriend(friend.id_amistad);
-                    onSelectFriend(null);
+                    onSelectFriend(null, "", "");
                     selectedFriendshipID = null;
                   }} 
                   className="text-red-500 px-4 py-2 rounded-md hover:text-red-800 transition duration-300 ease-in-out"

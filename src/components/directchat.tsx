@@ -5,6 +5,8 @@ import "./directchat.css";
 
 interface DirectChatProps {
   friendshipID: number | null;
+  friendName: string;
+  friendAvatar: string;
 }
 
 interface Message {
@@ -16,7 +18,7 @@ interface Message {
   contenido: string;
 }
 
-function DirectChat({ friendshipID }: DirectChatProps) {
+function DirectChat({ friendshipID, friendName, friendAvatar }: DirectChatProps) {
   const socket = useSocket();
   const [message, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -98,8 +100,12 @@ function DirectChat({ friendshipID }: DirectChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full pt-12 md:pt-4 md:pl-5">
+    <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black mt-[41px]">
+      <div className="w-full bg-white border-b-2 border-black flex items-center gap-2 px-4 py-3">
+        <img src={friendAvatar} alt={friendName} className="w-8 h-8 rounded-full" />
+        <span className="font-bold text-black text-lg">{friendName}</span>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full md:pt-4 md:pl-5">
         {message.map((msg) => (
           <div key={msg.id} className="mb-2 text-black chat-message p">
             <strong>{msg.usuario.nombre_usuario}:</strong> {msg.contenido}
@@ -115,7 +121,7 @@ function DirectChat({ friendshipID }: DirectChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          className="flex-1 border border-gray-300 p-2 text-black"
+          className="flex-1 border border-gray-300 p-2 text-black bg-white"
         />
         {!loading && (
           <button
