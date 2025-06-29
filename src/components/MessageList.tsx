@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 
 interface Message {
   id: number;
@@ -17,6 +17,7 @@ function MessageList({ token }: MessageListProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -41,12 +42,15 @@ function MessageList({ token }: MessageListProps) {
     if (!window.confirm('¿Seguro que quieres eliminar este mensaje?')) return;
 
     try {
+      setDeleting({ [messageId]: true });
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/messages/${messageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(messages.filter(m => m.id !== messageId));
     } catch {
       alert('Error al eliminar mensaje');
+    } finally {
+      setDeleting({});
     }
   };
 
@@ -57,7 +61,7 @@ function MessageList({ token }: MessageListProps) {
     <>
       <input
         type="text"
-        placeholder="Buscar mensajes"
+        placeholder="Buscar mensajes..."
         value={search}
         onChange={e => setSearch(e.target.value)}
         className="border border-gray-300 rounded px-2 py-1 mb-4 w-full text-black font-[Comic_Sans_MS]"
@@ -78,12 +82,14 @@ function MessageList({ token }: MessageListProps) {
               <td className="border px-2 py-1">{message.contenido}</td>
               <td className="border px-2 py-1">{message.id_usuario}</td>
               <td className="border px-2 py-1">
-                <button
-                  onClick={() => handleDeleteMessage(message.id)}
-                  className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
-                >
-                  Eliminar
-                </button>
+                {!deleting[message.id] && (
+                  <button
+                    onClick={() => handleDeleteMessage(message.id)}
+                    className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                  >
+                    Eliminar
+                  </button>
+                )}
               </td>
             </tr>
           ))}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../config/axiosconfig";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -7,6 +7,7 @@ function CrearSalaForm(){
   const [nombreSala, setNombreSala] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,6 +17,7 @@ function CrearSalaForm(){
       return;
     }
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const decoded = token ? jwtDecode(token) as any : {};
       const userID = decoded.subject ?? null;
@@ -36,6 +38,8 @@ function CrearSalaForm(){
     } catch (err) {
       console.error("Error creando sala:", err);
       setError("Ocurrió un error al crear la sala.");
+    } finally {
+      setLoading(false);
     }
 };
 
@@ -86,13 +90,15 @@ function CrearSalaForm(){
         />
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
-
-        <button
-          type="submit"
-          className="w-full bg-[#2a2a2a] text-white py-2 rounded-lg hover:bg-[#1a1a1a] transition duration-200 font-semibold"
-        >
-          Crear sala
-        </button>
+        
+        {!loading && (        
+          <button
+            type="submit"
+            className="w-full bg-[#2a2a2a] text-white py-2 rounded-lg hover:bg-[#1a1a1a] transition duration-200 font-semibold"
+          >
+            Crear sala
+          </button>)
+        }
       </form>
     </div>
   );

@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import "./chatlist.css";
 import { useState, useEffect, Fragment } from "react";
-import axios from "axios";
+import axios from "../config/axiosconfig";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -13,11 +13,18 @@ function Chatlist() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [chats, setChats] = useState<{ id: number; nombre: string, id_creador: number, contrasena: string | null }[]>([]);
+  const [deleting, setDeleting] = useState<{ [key: number]: boolean }>({});
   const token = localStorage.getItem("token");
   const decoded = token ? jwtDecode(token) as any : {};
   const userID = decoded.subject ?? null;
   const scopes: string[] = Array.isArray(decoded.scopes) ? decoded.scopes : [];
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      navigate('/');
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -42,6 +49,7 @@ function Chatlist() {
     if (!confirmar) return;
 
     try {
+      setDeleting({ [id]: true });
       const token = localStorage.getItem("token");
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/salas/${id}`, {
         headers: {
@@ -52,6 +60,8 @@ function Chatlist() {
     } catch (error) {
       console.error("Error al eliminar sala:", error);
       alert("No se pudo eliminar la sala.");
+    } finally {
+      setDeleting({});
     }
   };
 
@@ -77,7 +87,7 @@ function Chatlist() {
           >
             <span className="text-lg font-semibold text-black font-[Comic_Neue]">{chat.nombre}</span>
 
-            {(parseInt(userID) === chat.id_creador || scopes.includes("admin")) && (
+            {(parseInt(userID) === chat.id_creador || scopes.includes("admin")) && !deleting[chat.id] && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -100,6 +110,7 @@ function Chatlist() {
           Crear nueva sala
         </Link>
       </div>
+
       <Transition show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
           <div className="fixed inset-0 bg-black/30" aria-hidden="true" />

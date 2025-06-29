@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from 'react';
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 import { Dialog, Transition } from '@headlessui/react';
 
 interface Room {
@@ -29,6 +29,8 @@ function RoomList({ token }: RoomListProps) {
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [deletingRoom, setDeletingRoom] = useState<{ [key: number]: boolean }>({});
+  const [deletingMessage, setDeletingMessage] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -53,12 +55,15 @@ function RoomList({ token }: RoomListProps) {
     if (!window.confirm('¿Seguro que quieres eliminar esta sala?')) return;
 
     try {
+      setDeletingRoom({ [roomId]: true });
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/rooms/${roomId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRooms(rooms.filter(r => r.id !== roomId));
     } catch {
       alert('Error al eliminar sala');
+    } finally {
+      setDeletingRoom({});
     }
   };
 
@@ -79,12 +84,15 @@ function RoomList({ token }: RoomListProps) {
     if (!window.confirm('¿Seguro que quieres eliminar este mensaje?')) return;
 
     try {
+      setDeletingMessage({ [messageId]: true });
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/messages/${messageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(messages.filter(m => m.id !== messageId));
     } catch {
       alert('Error al eliminar mensaje');
+    } finally {
+      setDeletingMessage({});
     }
   };
 
@@ -124,12 +132,14 @@ function RoomList({ token }: RoomListProps) {
                 </button>
               </td>
               <td className="border px-2 py-1">
-                <button
-                  onClick={() => handleDeleteRoom(room.id)}
-                  className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
-                >
-                  Eliminar
-                </button>
+                {!deletingRoom[room.id] && (
+                  <button
+                    onClick={() => handleDeleteRoom(room.id)}
+                    className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                  >
+                    Eliminar
+                  </button>
+                )}
               </td>
             </tr>
           ))}
@@ -155,12 +165,14 @@ function RoomList({ token }: RoomListProps) {
                       <div>
                         <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
                       </div>
-                      <button
-                        onClick={() => handleDeleteMessage(message.id)}
-                        className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
-                      >
-                        Eliminar
-                      </button>
+                      {!deletingMessage[message.id] && (
+                        <button
+                          onClick={() => handleDeleteMessage(message.id)}
+                          className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                        >
+                          Eliminar
+                        </button>
+                      )}
                     </div>
                   ))
                 )}

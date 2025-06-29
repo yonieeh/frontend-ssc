@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 
 const LoginForm = () => {
 	const navigate = useNavigate();
@@ -8,6 +8,7 @@ const LoginForm = () => {
 		correo: '',
 		contrasena: ''
 	});
+	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
@@ -19,6 +20,7 @@ const LoginForm = () => {
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
 		try {
+			setLoading(true);
 			const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData);
 			const result = await response.data;
 
@@ -35,10 +37,11 @@ const LoginForm = () => {
 		} catch (err) {
 			console.error(err);
 			alert('Inicio de sesión fallido');
+		} finally {
+			setLoading(false);
 		}
-
-		
 	};
+
 	return(
 		<form onSubmit={handleSubmit} className='flex flex-col gap-4 justify-center'>
 			<input
@@ -59,12 +62,14 @@ const LoginForm = () => {
 				required
 				className="p-2 border"
 			/>
-			<button
-				type="submit"
-				className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
-			>
-				Entrar
-			</button>
+			{!loading && (
+				<button
+					type="submit"
+					className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
+				>
+					Entrar
+				</button>
+			)}
 		</form>
 	);
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 
 interface User {
   id: number;
@@ -19,6 +19,7 @@ function UserList({ token }: UserListProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -43,12 +44,15 @@ function UserList({ token }: UserListProps) {
     if (!window.confirm('¿Seguro que quieres eliminar este usuario?')) return;
 
     try {
+      setDeleting({ [userId]: true });
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(users.filter(u => u.id !== userId));
     } catch {
       alert('Error al eliminar usuario');
+    } finally {
+      setDeleting({});
     }
   };
 
@@ -80,12 +84,14 @@ function UserList({ token }: UserListProps) {
               <td className="border px-2 py-1">{user.nombre_usuario}</td>
               <td className="border px-2 py-1">{user.correo}</td>
               <td className="border px-2 py-1">
-                <button
-                  onClick={() => handleDeleteUser(user.id)}
-                  className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                {!deleting[user.id] && (
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
                   >
-                  Eliminar
-                </button>
+                    Eliminar
+                  </button>
+                )}
               </td>
             </tr>
           ))}

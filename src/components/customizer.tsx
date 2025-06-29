@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 
 function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [color, setColor] = useState("#000000");
   const [lineWidth, setLineWidth] = useState(2);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -94,11 +95,43 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseout", stopDrawing);
 
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      startDrawing({
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      } as MouseEvent);
+    }), { passive: false };
+
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      draw({
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      } as MouseEvent);
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      stopDrawing();
+    }, { passive: false });
+
+    canvas.addEventListener("touchcancel", (e) => {
+      e.preventDefault();
+      stopDrawing();
+    }, { passive: false });
+
     return () => {
       canvas.removeEventListener("mousedown", startDrawing);
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", stopDrawing);
       canvas.removeEventListener("mouseout", stopDrawing);
+      canvas.removeEventListener("touchstart", startDrawing as any);
+      canvas.removeEventListener("touchmove", draw as any);
+      canvas.removeEventListener("touchend", stopDrawing);
+      canvas.removeEventListener("touchcancel", stopDrawing);
     };
   }, [color, lineWidth]);
 
@@ -107,6 +140,7 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
     if (!canvas) return;
     const dataURL = canvas.toDataURL("image/png").split(";base64,")[1];
     try {
+      setLoading(true);
       onAvatarUpdated();
       const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/avatares`, {
         base64: dataURL
@@ -121,6 +155,8 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
       }
     } catch (error) {
       console.error("Error updating avatar:", error);
+    } finally {
+      setLoading(false);
     }
       
   };
@@ -145,12 +181,14 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
             onChange={(e) => setLineWidth(parseInt(e.target.value))}
           />
         </div>
-        <button 
-          className="px-4 py-1 bg-black text-white hover:bg-white hover:text-black border border-black transition duration-300 ease-in-out"
-          onClick={handleExport}
-        >
-          Actualizar avatar
-        </button>
+        {!loading && (
+          <button 
+            className="px-4 py-1 bg-black text-white hover:bg-white hover:text-black border border-black transition duration-300 ease-in-out"
+            onClick={handleExport}
+          >
+            Actualizar avatar
+          </button>
+        )}
       </div>
     </div>
   );
