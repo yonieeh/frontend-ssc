@@ -1,13 +1,6 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&display=swap');
 
-body, html, #root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 @keyframes message-pop {
   0% {
     opacity: 0;
@@ -26,4 +19,3 @@ body, html, #root {
 .chat-message {
   animation: message-pop 0.3s ease-out;
 }
-

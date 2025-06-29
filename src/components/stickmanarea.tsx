@@ -1,46 +1,125 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import stickman from "../assets/control-stickman.png";
-import { io } from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACKEND_URL);
+import { useSocket } from "../context/socketcontext-utils";
+import { jwtDecode } from "jwt-decode";
 
 type User = {
   id: number;
   x: number; 
   y: number;
+  url: string;
+  width?: number;
+  height?: number;
 };
 
 function Stickmanarea() {
+  const socket = useSocket();
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [users, setUsers] = useState<Record<string, User>>({});
   const [position, setPosition] = useState({ x: containerSize.width / 2, y: containerSize.height / 2 });
+  const [myAvatar, setMyAvatar] = useState<string | null>(null);
+  const [avatarSize, setAvatarSize] = useState({ width: 0, height: 0 });
+  const [avatarSizes, setAvatarSizes] = useState<Record<string, { width: number; height: number }>>({});
+  const { roomID } = useParams();
+  const userID = (jwtDecode(localStorage.getItem("token") || "") as { subject: string })?.subject;
   
   const containerRef = useRef<HTMLDivElement>(null);
-  const stickmanWidth = containerSize.width * 0.08;
-  const stickmanHeight = containerSize.height * 0.08;
   const isMobile = window.innerWidth < 768;
+
+  const maxScale = 0.1;
+
+  const widthRatio = containerSize.width * maxScale / (avatarSize.width || 1);
+  const heightRatio = containerSize.height * maxScale / (avatarSize.height || 1);
+  const scale = Math.min(widthRatio, heightRatio);
+
+  const stickmanWidth = avatarSize.width ? avatarSize.width * scale : containerSize.width * 0.08;
+  const stickmanHeight = avatarSize.height ? avatarSize.height * scale : containerSize.height * 0.08;
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/usuarios`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        setMyAvatar(data.avatar);
+
+        const img = new Image();
+        img.src = data.avatar;
+        img.onload = () => {
+          setAvatarSize({ 
+            width: img.naturalWidth, 
+            height: img.naturalHeight 
+          });
+        };
+      } catch (error) {
+        console.error("Error fetching avatar:", error);
+      }
+    };
+
+    fetchAvatar();
+  }, []);
+
+  useEffect(() => {
+    const preloadAvatars = async () => {
+      const promises = Object.entries(users).map(([id, user]) => {
+        return new Promise<void>((resolve) => {
+          if (!user.url) return resolve();
+          const img = new Image();
+          img.src = user.url;
+          img.onload = () => {
+            setAvatarSizes((prev) => ({
+              ...prev,
+              [id]: {
+                width: img.naturalWidth,
+                height: img.naturalHeight
+              }
+            }));
+            resolve()
+          };
+          
+          img.onerror = () => {
+            resolve();
+          }
+        });
+      })
+
+      await Promise.all(promises);
+    }
+
+    preloadAvatars();
+  }, [users])
+
+  useEffect(() => {
+    if (!roomID) return;
+    socket.emit('joinRoom', roomID);
+  }, [roomID, socket])
 
   useEffect(() => {
     socket.on('existingUsers', (users: User[]) => {
       const userMap: Record<string, User> = {};
       users.forEach((user) => {
-        userMap[user.id] = user;
+        userMap[String(user.id)] = user;
       });
       setUsers(userMap);
     });
 
     socket.on('newUser', (user: User) => {
-      setUsers((prev) => ({ ...prev, [user.id]: user }));
+      setUsers((prev) => ({ ...prev, [String(user.id)]: user }));
     });
 
     socket.on('userMoved', (user: User) => {
-      setUsers((prev) => ({ ...prev, [user.id]: user }));
+      setUsers((prev) => ({ ...prev, [String(user.id)]: user }));
     });
 
     socket.on('userLeft', (id: number) => {
       setUsers((prev) => {
         const newUsers = { ...prev };
-        delete newUsers[id];
+        delete newUsers[String(id)];
         return newUsers;
       });
     })
@@ -51,7 +130,7 @@ function Stickmanarea() {
       socket.off('userMoved');
       socket.off('userLeft');
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const updateSize = () => {
@@ -104,6 +183,7 @@ function Stickmanarea() {
 
     setPosition({ x: newX, y: newY});
     socket.emit('userMoved', { 
+      roomID,
       x: newX, 
       y: newY
     });
@@ -126,7 +206,7 @@ function Stickmanarea() {
     newY = Math.max(0, Math.min(newY, 1 - stickmanRatioY));
 
     setPosition({ x: newX, y: newY });
-    socket.emit('userMoved', { x: newX, y: newY });
+    socket.emit('userMoved', { roomID, x: newX, y: newY });
   };
 
   return (
@@ -146,32 +226,47 @@ function Stickmanarea() {
           </div>
         </div>
       )}
-      <div
-        className="absolute transition-transform duration-150 ease-out"
-        style={{ 
-          left: position.x * (containerSize.width), 
-          top: position.y * (containerSize.height),
-          width: stickmanWidth,
-          height: stickmanHeight
-        }}
-      >
-        <img src={stickman} alt="User stickman" className="w-full h-full" />
-      </div>
-
-      {Object.entries(users).map(([id, { x, y }]) => (
+      {myAvatar && (
         <div
-          key={id}
           className="absolute transition-transform duration-150 ease-out"
           style={{ 
-            left: x * (containerSize.width), 
-            top: y * (containerSize.height),
+            left: position.x * (containerSize.width), 
+            top: position.y * (containerSize.height),
             width: stickmanWidth,
             height: stickmanHeight
           }}
-        >
-          <img src={stickman} alt="Other stickman" className="w-full h-full" />
+          >
+          <img src={myAvatar || stickman} alt="User stickman" className="w-full h-full" />
         </div>
-      ))}
+      )}
+
+      {Object.entries(users)
+        .filter(([id]) => id !== userID)
+        .map(([id, { x, y, url }]) => {
+          const size = avatarSizes[id];
+          if (!size) return null;
+          const userScale = Math.min(
+            containerSize.width * maxScale / (size.width || 1),
+            containerSize.height * maxScale / (size.height || 1)
+          )
+
+          const w = size.width * userScale;
+          const h = size.height * userScale;
+
+          return (
+            <div
+              key={id}
+              className="absolute transition-transform duration-150 ease-out"
+              style={{ 
+                left: x * (containerSize.width), 
+                top: y * (containerSize.height),
+                width: w,
+                height: h
+              }}
+            >
+              <img src={url || stickman} alt="Other stickman" className="w-full h-full" />
+            </div>
+      )})}
     </div>
   )
 }

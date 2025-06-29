@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../config/axiosconfig";
 import { jwtDecode } from 'jwt-decode';
+import Customizer from './customizer';
 
 function ProfileUpdate() {
   const navigate = useNavigate();
@@ -10,6 +11,9 @@ function ProfileUpdate() {
     contrasena: '',
     confirmarContrasena: ''
   });
+  const [avatarUpdate, setAvatarUpdate] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -21,6 +25,7 @@ function ProfileUpdate() {
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setUpdating(true);
       const token = localStorage.getItem("token");
       if (!token) {
         alert('Inicia sesión para actualizar tus datos');
@@ -40,8 +45,11 @@ function ProfileUpdate() {
         }
         data.contrasena = formData.contrasena.trim();
       }
-      if (Object.keys(data).length === 0) {
+      if (Object.keys(data).length === 0 && !avatarUpdate) {
         alert('Por favor ingresa al menos un campo para actualizar');
+        return;
+      }
+      if (avatarUpdate) {
         return;
       }
       const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, data, {
@@ -56,12 +64,15 @@ function ProfileUpdate() {
     } catch (err) {
       console.error(err);
       alert('Hubo un error al modificar los datos, por favor inténtalo de nuevo');
+    } finally {
+      setUpdating(false);
     }
   };
 
   const handleDelete = async(e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setDeleting(true);
       const confirm = window.confirm('Estas seguro de querer eliminar tu cuenta?');
       if (!confirm) {
         return;
@@ -82,6 +93,8 @@ function ProfileUpdate() {
     } catch (err) {
       console.error(err);
       alert('Hubo un error al eliminar la cuenta, por favor inténtalo de nuevo');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -114,19 +127,25 @@ function ProfileUpdate() {
           onChange={handleChange} 
           className="p-2 border" 
         />
-        <button 
-          type="submit" 
-          className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
-        >
-          Actualizar Datos
-        </button>
-        <button 
-          type="button" 
-          className="group p-2 bg-red-500 border border-red-500 hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200" 
-          onClick={handleDelete}
-        >
-          Eliminar cuenta
-        </button>
+        <Customizer onAvatarUpdated={() => setAvatarUpdate(true)}/>
+        
+        {(!updating && !deleting) && (
+          <>
+            <button 
+              type="submit" 
+              className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
+            >
+              Actualizar Datos
+            </button>
+            <button 
+              type="button" 
+              className="group p-2 bg-red-500 border border-red-500 hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200" 
+              onClick={handleDelete}
+            >
+              Eliminar cuenta
+            </button>
+          </>  
+        )}
 
     </form>
   );

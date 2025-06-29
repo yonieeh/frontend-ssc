@@ -10,13 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@radix-ui/react-dialog": "^1.1.14",
     "axios": "^1.10.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "fs": "^0.0.1-security",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",
+    "react-modal": "^3.16.3",
     "react-router-dom": "^7.6.0",
     "serve": "^14.2.4",
     "socket.io-client": "^4.8.1"
@@ -24,9 +28,10 @@
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@tailwindcss/postcss": "^4.1.6",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "^22.15.21",
-    "@types/react": "^19.1.4",
-    "@types/react-dom": "^19.1.5",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",

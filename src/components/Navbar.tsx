@@ -2,18 +2,31 @@ import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { jwtDecode } from "jwt-decode"; // instalar esto: npm install jwt-decode
+
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
+  const token = localStorage.getItem('token');
+  if (token) {
+    setIsLoggedIn(true);
+    try {
+      const decoded = jwtDecode(token) as { scope: string[] };
+      if (decoded.scope && decoded.scope.includes('admin')) {
+        setIsAdmin(true);
+      }
+    } catch (err) {
+      console.error("Error decoding token:", err);
     }
-  }, []);
+  }
+}, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -64,8 +77,11 @@ function Navbar() {
           <li><a href="/instructions" className="hover:underline">Instrucciones</a></li>
           {isLoggedIn ? (
             <>
-              <li><a href="/chat/1" className="hover:underline">Empieza a chatear!</a></li>
+              <li><a href="/friendlist" className="hover:underline">Amigos</a></li>
+              <li><a href="/chatlist" className="hover:underline">Empieza a chatear!</a></li>
               <li><a href="/profile" className="hover:underline">Perfil</a></li>
+              {isAdmin && (<li><a href="/admin" className="hover:underline">Admin</a></li>)}
+
               <li><button onClick={handleLogout} className="hover:underline">Cerrar sesión</button></li>
             </>
           ) : (
@@ -83,7 +99,10 @@ function Navbar() {
           <a href="/instructions" onClick={() => setIsOpen(false)} className="hover:underline">Instrucciones</a>
           {isLoggedIn ? (
             <>
-              <a href="/chat/1" onClick={() => setIsOpen(false)} className="hover:underline">Empieza a chatear!</a>
+              {isAdmin && (<a href="/admin" onClick={() => setIsOpen(false)} className="hover:underline">Admin</a>)}
+              <a href="/friendlist" onClick={() => setIsOpen(false)} className="hover:underline">Amigos</a>
+              <a href="/chatlist" onClick={() => setIsOpen(false)} className="hover:underline">Empieza a chatear!</a>
+              <a href="/profile" onClick={() => setIsOpen(false)} className="hover:underline">Perfil</a>
               <button onClick={() => { handleLogout(); setIsOpen(false); }} className="hover:underline">Cerrar sesión</button>
             </>
           ) : (
