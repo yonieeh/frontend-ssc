@@ -38,7 +38,6 @@ function Chatlist() {
             headers: { Authorization: `Bearer ${token}` }
           });
           setChats(res.data);
-          console.log(res.data);
         } catch (err) {
           console.error("Error cargando las salas:", err);
         }
@@ -78,7 +77,6 @@ function Chatlist() {
           <div
             key={chat.id}
             onClick={() => {
-              console.log(chat);
               if (chat.contrasena) {
                 setSelectedChat(chat);
                 setIsOpen(true);

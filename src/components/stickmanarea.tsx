@@ -104,7 +104,6 @@ function Stickmanarea() {
       const userMap: Record<string, User> = {};
       users.forEach((user) => {
         userMap[String(user.id)] = user;
-        console.log(user);
       });
       setUsers(userMap);
     });
