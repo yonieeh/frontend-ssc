@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axios from "../config/axiosconfig";
 import { useParams } from "react-router-dom";
 import { useSocket } from "../context/socketcontext";
+import { jwtDecode } from "jwt-decode";
 
 
 function Chatbox() {
   const socket = useSocket();
   const [chatMessages, setChatMessages] = useState<
-    { id: number; usuario: { id: number; nombre_usuario: string }; contenido: string; }[]
+    { id: number; usuario: { id: number; nombre_usuario: string } | null; contenido: string; }[]
   >([]);
   const [input, setInput] = useState("");
   const { roomID } = useParams();
@@ -15,6 +16,63 @@ function Chatbox() {
   const [selectedUser, setSelectedUser] = useState<{ id: number; nombre_usuario: string }>({ id: 0, nombre_usuario: "" });
   const [showFriendModal, setShowFriendModal] = useState(false);
   const [requestStatus, setRequestStatus] = useState<string | null>(null);
+  const [friends, setFriends] = useState<{ id: number; nombre_usuario: string; }[]>([]);
+  const [requests, setRequests] = useState<{ id: number; nombre_usuario: string; }[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const userID = (jwtDecode(localStorage.getItem("token") || "") as { subject: string })?.subject;
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/amistades`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setFriends(response.data);
+      } catch (error) {
+        console.error("Error fetching friends:", error);
+      }
+    }
+
+    fetchFriends();
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const [sent, received] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/enviadas`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/solicitudes/recibidas`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+      ]);
+
+      const sentRequests = sent.data.map((request: any) => ({
+        id: request.destinatario.id
+      }));
+
+      const receivedRequests = received.data.map((request: any) => ({
+        id: request.remitente.id
+      }));
+
+      setRequests([...sentRequests, ...receivedRequests]);
+
+    } catch (error) {
+      console.error("Error fetching requests:", error);   
+    }  
+  }
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
   useEffect(() => {
     if (!roomID) return;
@@ -38,7 +96,7 @@ function Chatbox() {
 
   useEffect(() => {
     const fetchChatMessages = async () => {
-      try {
+      try {        
         const token = localStorage.getItem("token");
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${roomID}`, {
           headers: {
@@ -58,9 +116,11 @@ function Chatbox() {
   }, [roomID]);
 
   const sendMessage = async () => {
-    if (input.trim() !== "") {
-      const token = localStorage.getItem("token");
-      const message = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${roomID}`, {
+    try {
+      if (input.trim() !== "") {
+        setIsSending(true);
+        const token = localStorage.getItem("token");
+        const message = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/mensajes/${roomID}`, {
           contenido: input,
           timestamp: new Date().toISOString(),
           estado: "Enviado"
@@ -70,26 +130,37 @@ function Chatbox() {
         }
       });
       const newMessage = message.data;
-      socket.emit("chatMessage", newMessage);
+      socket.emit("chatMessage", { roomID, ...newMessage });
       setInput("");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsSending(false);
     }
   };
   
   
   return (
     <div className="w-full min-w-[280px] bg-[#f5f5f5] border-3 border-[#2a2a2a] flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-6 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
+      <div className="flex-1 overflow-y-auto bg-[#f0f0f0] p-4 pl-5 space-y-2 text-sm font-[Comic_Sans_MS] text-[#1a1a1a]">
         {chatMessages.map((message, index) => (
           <div key={index} className="chat-message">
             <strong
               className="cursor-pointer hover:text-[#2a2a2a] hover:font-bold"
               onClick={() => {
+                if (
+                  message.usuario === null || 
+                  message.usuario.id === parseInt(userID) ||
+                  requests.some((request) => request.id === message.usuario?.id) ||
+                  friends.some((friend) => friend.id === message.usuario?.id)
+                ) return;
                 setSelectedUser({id: message.usuario.id, nombre_usuario: message.usuario.nombre_usuario});
                 setShowFriendModal(true);
                 setRequestStatus(null);
               }}
             >
-              {message.usuario.nombre_usuario}
+              {message.usuario ? message.usuario.nombre_usuario : "(usuario eliminado)"}
             </strong>: {message.contenido}
           </div>
         ))}
@@ -104,12 +175,14 @@ function Chatbox() {
           className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] shadow-sm focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a] w-[70%]"
           placeholder="Escribe tu mensaje..."
         />
-        <button
-          onClick={sendMessage}
-          className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a] w-[30%]"
-        >
-          Enviar
-        </button>
+        {!isSending && (
+          <button
+            onClick={sendMessage}
+            className="mt-4 p-2 border border-gray-300 font-[Comic_Sans_MS] focus:outline-none focus:ring-2 focus:ring-[#2a2a2a] text-[#1a1a1a] w-[30%]"
+          >
+            Enviar
+          </button>
+        )}
       </div>
       {showFriendModal && selectedUser && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -134,6 +207,7 @@ function Chatbox() {
                 onClick={async () => {
                     try {
                       const token = localStorage.getItem("token");
+                      console.log(selectedUser);
                       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/solicitudes`, {
                           id_usuario2: selectedUser.id
                         }, {
@@ -142,6 +216,8 @@ function Chatbox() {
                         }
                       });
                       setRequestStatus("Solicitud enviada con éxito");
+                      fetchRequests();
+                      socket.emit("recieveFriendRequest", selectedUser.id);
                       setShowFriendModal(false);
                       setSelectedUser({id: 0, nombre_usuario: ""});
                     } catch (err) {
