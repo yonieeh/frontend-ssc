@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 function Chatbox() {
   const socket = useSocket();
   const [chatMessages, setChatMessages] = useState<
-    { id: number; usuario: { id: number; nombre_usuario: string } | null; contenido: string; }[]
+    { id: number; id_usuario: number; usuario: { nombre_usuario: string } | null; contenido: string; }[]
   >([]);
   const [input, setInput] = useState("");
   const { roomID } = useParams();
@@ -19,6 +19,7 @@ function Chatbox() {
   const [friends, setFriends] = useState<{ id: number; nombre_usuario: string; }[]>([]);
   const [requests, setRequests] = useState<{ id: number; nombre_usuario: string; }[]>([]);
   const [isSending, setIsSending] = useState(false);
+  const [requestSending, setRequestSending] = useState(false);
   const userID = (jwtDecode(localStorage.getItem("token") || "") as { subject: string })?.subject;
 
   useEffect(() => {
@@ -103,9 +104,7 @@ function Chatbox() {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log("URL de backend:", import.meta.env.VITE_BACKEND_URL);
         const messages = response.data;
-        console.log("Messages from backend:", messages);
         setChatMessages(messages);
       } catch (error) {
         console.error("Error fetching chat messages:", error);
@@ -151,11 +150,12 @@ function Chatbox() {
               onClick={() => {
                 if (
                   message.usuario === null || 
-                  message.usuario.id === parseInt(userID) ||
-                  requests.some((request) => request.id === message.usuario?.id) ||
-                  friends.some((friend) => friend.id === message.usuario?.id)
+                  message.id_usuario === 0 ||
+                  message.id_usuario === parseInt(userID) ||
+                  requests.some((request) => request.id === message.id_usuario) ||
+                  friends.some((friend) => friend.id === message.id_usuario)
                 ) return;
-                setSelectedUser({id: message.usuario.id, nombre_usuario: message.usuario.nombre_usuario});
+                setSelectedUser({id: message.id_usuario, nombre_usuario: message.usuario.nombre_usuario});
                 setShowFriendModal(true);
                 setRequestStatus(null);
               }}
@@ -202,12 +202,13 @@ function Chatbox() {
               >
               Cancelar
               </button>
-              <button
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                onClick={async () => {
+              {!requestSending && (
+                <button
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  onClick={async () => {
                     try {
+                      setRequestSending(true);
                       const token = localStorage.getItem("token");
-                      console.log(selectedUser);
                       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/solicitudes`, {
                           id_usuario2: selectedUser.id
                         }, {
@@ -223,11 +224,14 @@ function Chatbox() {
                     } catch (err) {
                       console.error(err);
                       setRequestStatus("No se pudo enviar la solicitud.");
+                    } finally {
+                      setRequestSending(false);
                     }
                   }}
-              >
-              Enviar
-              </button>
+                >
+                  Enviar
+                </button>
+              )}
             </div>
           </div>
         </div>
