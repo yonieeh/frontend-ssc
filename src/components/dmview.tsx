@@ -27,18 +27,11 @@ function DirectMessageView() {
           md:block md:w-2/3 h-full
         `}
       >
-        <div className="md:hidden p-2 border-b border-gray-300 bg-white sticky top-0">
-          <button
-            onClick={() => setSelectedFriendshipID({ id_amistad: null, nombre_usuario: "", url_avatar: "" })}
-            className="text-black font-bold font-[Comic_Sans_MS]"
-          >
-            ← Volver
-          </button>
-        </div>
         <DirectChat 
           friendshipID={selectedFriendshipID.id_amistad} 
           friendName={selectedFriendshipID.nombre_usuario} 
           friendAvatar={selectedFriendshipID.url_avatar} 
+          onBack={() => setSelectedFriendshipID({ id_amistad: null, nombre_usuario: "", url_avatar: "" })}
         />
       </div>
     </div>

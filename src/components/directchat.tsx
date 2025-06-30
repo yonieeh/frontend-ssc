@@ -7,6 +7,7 @@ interface DirectChatProps {
   friendshipID: number | null;
   friendName: string;
   friendAvatar: string;
+  onBack?: () => void
 }
 
 interface Message {
@@ -18,7 +19,7 @@ interface Message {
   contenido: string;
 }
 
-function DirectChat({ friendshipID, friendName, friendAvatar }: DirectChatProps) {
+function DirectChat({ friendshipID, friendName, friendAvatar, onBack }: DirectChatProps) {
   const socket = useSocket();
   const [message, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -101,20 +102,26 @@ function DirectChat({ friendshipID, friendName, friendAvatar }: DirectChatProps)
 
   return (
     <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black lg:mt-0">
-      <div className="w-full bg-white border-b-2 border-black flex items-center gap-2 px-4 py-3">
+      <div className="w-full bg-white border-b-2 border-black flex items-center gap-2 px-4 py-3 sticky top-0 z-10 shrink-0">
+          <button
+            onClick={onBack}
+            className="md:hidden text-black font-bold font-[Comic_Sans_MS] mr-2"
+          >
+            ←
+          </button>
         <img src={friendAvatar} alt={friendName} className="w-8 h-8 rounded-full" />
         <span className="font-bold text-black text-lg font-[Comic_Sans_MS]">{friendName}</span>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full md:pt-4 md:pl-5">
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm md:pt-4 md:pl-5">
         {message.map((msg) => (
           <div key={msg.id} className="mb-2 text-black chat-message p font-[Comic_Sans_MS]">
-            <strong>{msg.usuario.nombre_usuario}:</strong> {msg.contenido}
+            <strong>{msg.usuario?.nombre_usuario ?? "usuario eliminado"}:</strong> {msg.contenido}
           </div>
         ))}
         <div ref={bottomRef} />
       </div>
-
-      <div className="p-4 border-t flex gap-2 sticky bottom-0">
+      
+      <div className="p-4 border-t flex gap-2 sticky bottom-0 z-0 shrink-0">
         <input
           type="text"
           placeholder="Escribe un mensaje..."

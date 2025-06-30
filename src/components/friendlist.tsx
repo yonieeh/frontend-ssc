@@ -273,7 +273,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
               <div className="flex items-center">
                 <img src={friend.url_avatar} alt={friend.nombre_usuario} className="w-8 h-8 rounded-full text-black mr-2" />
                 <div className="flex flex-col">
-                  <span className="ml-2 text-black font-bold font-[Comic_Sans_MS] text-left">{friend.nombre_usuario}</span>
+                  <span className="ml-2 text-black font-bold font-[Comic_Sans_MS] text-left">{!friend.nombre_usuario ? "usuario eliminado" : friend.nombre_usuario}</span>
                   {friendStatus && (
                     friendStatus.nombre_estado === "En linea" ? (
                       <p className="text-sm text-green-600 font-semibold font-[Comic_Sans_MS] ml-2">🟢 En línea</p>
