@@ -51,7 +51,7 @@ const LoginForm = () => {
 				value={formData.correo}
 				onChange={handleChange}
 				required
-				className="p-2 border"
+				className="p-2 border font-[Comic_Sans_MS]"
 			/>
 			<input
 				type="password"
@@ -60,12 +60,12 @@ const LoginForm = () => {
 				value={formData.contrasena}
 				onChange={handleChange}
 				required
-				className="p-2 border"
+				className="p-2 border font-[Comic_Sans_MS]"
 			/>
 			{!loading && (
 				<button
 					type="submit"
-					className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
+					className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200 font-[Comic_Sans_MS]"
 				>
 					Entrar
 				</button>
