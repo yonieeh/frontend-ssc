@@ -163,7 +163,7 @@ function RoomList({ token }: RoomListProps) {
                   messages.map(message => (
                     <div key={message.id} className="text-black border-b pb-2 px-3 flex justify-between items-start font-[Comic_Sans_MS]">
                       <div className="font-[Comic_Sans_MS]">
-                        <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
+                        <strong>{message.usuario?.nombre_usuario ?? '(usuario eliminado)'}:</strong> {message.contenido}
                       </div>
                       {!deletingMessage[message.id] && (
                         <button
