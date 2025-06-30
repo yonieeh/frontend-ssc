@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "../config/axiosconfig";
-import { jwtDecode } from 'jwt-decode';
 import Customizer from './customizer';
 
 function ProfileUpdate() {
@@ -32,8 +31,6 @@ function ProfileUpdate() {
         navigate('/login');
         return;
       }
-      const decodedToken: { subject: string } = jwtDecode(token);
-      const userId = decodedToken.subject;
       const data: Record<string, string> = {};
       if (formData.nombre_usuario?.trim()) {
         data.nombre_usuario = formData.nombre_usuario.trim();
@@ -52,7 +49,7 @@ function ProfileUpdate() {
       if (avatarUpdate) {
         return;
       }
-      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, data, {
+      const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/usuarios`, data, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -78,9 +75,7 @@ function ProfileUpdate() {
         return;
       }
       const token = localStorage.getItem("token") || "";
-      const decodedToken: { subject: string } = jwtDecode(token);
-      const userId = decodedToken.subject;
-      const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/usuarios/${userId}`, {
+      const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/usuarios`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -107,7 +102,7 @@ function ProfileUpdate() {
           placeholder='Ingresa tu usuario nuevo'
           value={formData.nombre_usuario} 
           onChange={handleChange} 
-          className="p-2 border" 
+          className="p-2 border font-[Comic_Sans_MS]" 
         />
         <input 
           type="password" 
@@ -116,7 +111,7 @@ function ProfileUpdate() {
           placeholder='Ingresa tu contraseña nueva'
           value={formData.contrasena} 
           onChange={handleChange} 
-          className="p-2 border" 
+          className="p-2 border font-[Comic_Sans_MS]" 
         />
         <input 
           type="password" 
@@ -125,7 +120,7 @@ function ProfileUpdate() {
           placeholder='Confirma tu contraseña'
           value={formData.confirmarContrasena} 
           onChange={handleChange} 
-          className="p-2 border" 
+          className="p-2 border font-[Comic_Sans_MS]" 
         />
         <Customizer onAvatarUpdated={() => setAvatarUpdate(true)}/>
         
@@ -133,13 +128,13 @@ function ProfileUpdate() {
           <>
             <button 
               type="submit" 
-              className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200"
+              className="group p-2 bg-transparent border border-black hover:bg-black hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200 font-[Comic_Sans_MS]"
             >
               Actualizar Datos
             </button>
             <button 
               type="button" 
-              className="group p-2 bg-red-500 border border-red-500 hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200" 
+              className="group p-2 bg-red-500 border border-red-500 hover:text-white justify-center text-center w-[75%] items-center mx-auto transition-colors duration-200 font-[Comic_Sans_MS]" 
               onClick={handleDelete}
             >
               Eliminar cuenta

@@ -100,14 +100,14 @@ function DirectChat({ friendshipID, friendName, friendAvatar }: DirectChatProps)
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black mt-[41px]">
+    <div className="flex flex-col h-full w-full bg-[#f5f5f5] border-t-4 border-black lg:mt-0">
       <div className="w-full bg-white border-b-2 border-black flex items-center gap-2 px-4 py-3">
         <img src={friendAvatar} alt={friendName} className="w-8 h-8 rounded-full" />
-        <span className="font-bold text-black text-lg">{friendName}</span>
+        <span className="font-bold text-black text-lg font-[Comic_Sans_MS]">{friendName}</span>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-2 text-sm h-full md:pt-4 md:pl-5">
         {message.map((msg) => (
-          <div key={msg.id} className="mb-2 text-black chat-message p">
+          <div key={msg.id} className="mb-2 text-black chat-message p font-[Comic_Sans_MS]">
             <strong>{msg.usuario.nombre_usuario}:</strong> {msg.contenido}
           </div>
         ))}
@@ -121,12 +121,12 @@ function DirectChat({ friendshipID, friendName, friendAvatar }: DirectChatProps)
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          className="flex-1 border border-gray-300 p-2 text-black bg-white"
+          className="flex-1 border border-gray-300 p-2 text-black bg-white font-[Comic_Sans_MS]"
         />
         {!loading && (
           <button
             onClick={sendMessage}
-            className="bg-white text-black hover:bg-black hover:text-white border-2 border-black px-4 py-2"
+            className="bg-white text-black hover:bg-black hover:text-white border-2 border-black px-4 py-2 font-[Comic_Sans_MS]"
           >
             Enviar
           </button>

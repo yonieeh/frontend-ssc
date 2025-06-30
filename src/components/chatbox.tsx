@@ -188,7 +188,7 @@ function Chatbox() {
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded shadow-xl max-w-sm w-full">
             <h2 className="text-xl font-semibold mb-4 text-black">Enviar solicitud de amistad</h2>
-            <p className="mb-4 text-black">¿Enviar solicitud a <strong>{selectedUser.nombre_usuario}</strong>?</p>
+            <p className="mb-4 text-black font-[Comic_Sans_MS]">¿Enviar solicitud a <strong>{selectedUser.nombre_usuario}</strong>?</p>
             {requestStatus && (
               <p className="text-sm mb-2 text-center text-gray-600">{requestStatus}</p>
             )}
@@ -198,13 +198,13 @@ function Chatbox() {
                   setShowFriendModal(false);
                   setSelectedUser({id: 0, nombre_usuario: ""});
                 }}
-                className="px-4 py-2 bg-red-500 rounded hover:bg-red-700"
+                className="px-4 py-2 bg-red-500 rounded hover:bg-red-700 font-[Comic_Sans_MS]"
               >
               Cancelar
               </button>
               {!requestSending && (
                 <button
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-[Comic_Sans_MS]"
                   onClick={async () => {
                     try {
                       setRequestSending(true);
