@@ -30,7 +30,7 @@ function DirectMessageView() {
         <div className="md:hidden p-2 border-b border-gray-300 bg-white sticky top-0">
           <button
             onClick={() => setSelectedFriendshipID({ id_amistad: null, nombre_usuario: "", url_avatar: "" })}
-            className="text-black font-bold"
+            className="text-black font-bold font-[Comic_Sans_MS]"
           >
             ← Volver
           </button>

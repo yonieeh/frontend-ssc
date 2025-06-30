@@ -249,7 +249,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
     <div className="w-full h-full p-4 bg-transparent overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl font-bold text-black font-[Comic_Neue]">Amigos</h2>
-        <button onClick={() => setOpen(true)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 border-black transition duration-300 ease-in-out">
+        <button onClick={() => setOpen(true)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-white hover:text-black border-2 border-black transition duration-300 ease-in-out font-[Comic_Sans_MS]">
           Solicitudes
         </button>
       </div>
@@ -296,7 +296,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
                     onSelectFriend(null, "", "");
                     selectedFriendshipID = null;
                   }} 
-                  className="text-red-500 px-4 py-2 rounded-md hover:text-red-800 transition duration-300 ease-in-out"
+                  className="text-red-500 px-4 py-2 rounded-md hover:text-red-800 transition duration-300 ease-in-out font-[Comic_Sans_MS]"
                 >
                   Eliminar
                 </button>
@@ -314,18 +314,18 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
               <Dialog.Title className="text-2xl font-semibold font-[Comic_Neue] text-black text-center mb-4">Solicitudes de amistad</Dialog.Title>
 
               <div className="mb-7 max-h-60 overflow-y-auto">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Recibidas</h3>
-                {requests.received.length === 0 && <p className="text-sm text-gray-600">No tienes solicitudes nuevas.</p>}
+                <h3 className="text-lg font-medium text-gray-900 mb-2 font-[Comic_Neue]">Recibidas</h3>
+                {requests.received.length === 0 && <p className="text-sm text-gray-600 font-[Comic_Sans_MS]">No tienes solicitudes nuevas.</p>}
                 {requests.received.map((request) => (
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
-                    <span className="text-black">{request.remitente?.nombre_usuario ?? "Usuario desconocido"}</span>
+                    <span className="text-black font-[Comic_Sans_MS]">{request.remitente?.nombre_usuario ?? "Usuario desconocido"}</span>
                     <div className="flex gap-2">
                       {!loading && (
                         <>
-                          <button onClick={() => acceptRequest(request.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 hover:text-black transition duration-300 ease-in-out">
+                          <button onClick={() => acceptRequest(request.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 hover:text-black transition duration-300 ease-in-out font-[Comic_Sans_MS]">
                             Aceptar
                           </button>
-                          <button onClick={() => declineRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
+                          <button onClick={() => declineRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out font-[Comic_Sans_MS]">
                             Rechazar
                           </button>
                         </>  
@@ -336,13 +336,13 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
               </div>
 
               <div className="mb-7 max-h-60 overflow-y-auto">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Enviadas</h3>
-                {requests.sent.length === 0 && <p className="text-sm text-gray-600">No has enviados solicitudes nuevas.</p>}
+                <h3 className="text-lg font-medium text-gray-900 mb-2 font-[Comic_Neue]">Enviadas</h3>
+                {requests.sent.length === 0 && <p className="text-sm text-gray-600 font-[Comic_Sans_MS]">No has enviados solicitudes nuevas.</p>}
                 {requests.sent.map((request) => (
                   <div key={request.id} className="flex justify-between items-center p-2 mb-2">
-                    <span className="text-black">{request.destinatario?.nombre_usuario ?? "Usuario desconocido"}</span>
+                    <span className="text-black font-[Comic_Sans_MS]">{request.destinatario?.nombre_usuario ?? "Usuario desconocido"}</span>
                     {!cancelling && (
-                      <button onClick={() => cancelRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out">
+                      <button onClick={() => cancelRequest(request.id)} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 hover:text-black transition duration-300 ease-in-out font-[Comic_Sans_MS]">
                         Cancelar
                       </button>
                     )}
@@ -351,7 +351,7 @@ function FriendList({ onSelectFriend, selectedFriendshipID }: { onSelectFriend: 
               </div>
 
               <div className="mt-4 text-right">
-                <button onClick={() => setOpen(false)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 hover:text-black transition duration-300 ease-in-out">
+                <button onClick={() => setOpen(false)} className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 hover:text-black transition duration-300 ease-in-out font-[Comic_Sans_MS]">
                   Cerrar
                 </button>
               </div>

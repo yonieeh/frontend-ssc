@@ -161,14 +161,14 @@ function RoomList({ token }: RoomListProps) {
                   <p>No hay mensajes en esta sala</p>
                 ) : (
                   messages.map(message => (
-                    <div key={message.id} className="text-black border-b pb-2 px-3 flex justify-between items-start">
-                      <div>
+                    <div key={message.id} className="text-black border-b pb-2 px-3 flex justify-between items-start font-[Comic_Sans_MS]">
+                      <div className="font-[Comic_Sans_MS]">
                         <strong>{message.usuario.nombre_usuario}:</strong> {message.contenido}
                       </div>
                       {!deletingMessage[message.id] && (
                         <button
                           onClick={() => handleDeleteMessage(message.id)}
-                          className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition"
+                          className="border border-red-600 text-red-600 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition font-[Comic_Sans_MS]"
                         >
                           Eliminar
                         </button>
@@ -180,7 +180,7 @@ function RoomList({ token }: RoomListProps) {
               <div className="mt-4 text-right">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-white bg-black px-2 py-1 rounded hover:bg-white hover:text-black hover:border border-black transition"
+                  className="text-white bg-black px-2 py-1 rounded hover:bg-white hover:text-black hover:border border-black transition font-[Comic_Sans_MS]"
                 >
                   Cerrar
                 </button>

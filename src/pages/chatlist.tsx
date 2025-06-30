@@ -94,7 +94,7 @@ function Chatlist() {
                   e.stopPropagation();
                   eliminarSala(chat.id);
                 }}
-                className="text-red-500 hover:text-red-700 transition duration-200 text-sm"
+                className="text-red-500 hover:text-red-700 transition duration-200 text-sm font-[Comic_Sans_MS]"
               >
                 Eliminar
               </button>
@@ -106,7 +106,7 @@ function Chatlist() {
       <div className="flex justify-center px-4 py-2">
         <Link
           to="/create-chat"
-          className="inline-block bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-200"
+          className="inline-block bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-200 font-[Comic_Sans_MS]"
         >
           Crear nueva sala
         </Link>
@@ -118,15 +118,15 @@ function Chatlist() {
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
             <div className="w-full max-w-md rounded bg-white p-6 shadow-xl">
-              <h2 className="text-lg font-semibold text-gray-800">Ingrese la contraseña</h2>
-              <p className="text-sm text-gray-600 mb-4">
+              <h2 className="text-lg font-semibold text-gray-800 font-[Comic_Neue]">Ingrese la contraseña</h2>
+              <p className="text-sm text-gray-600 mb-4 font-[Comic_Sans_MS]">
                 La sala "{selectedChat?.nombre}" está protegida por una contraseña.
               </p>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-black"
+                className="w-full p-2 border border-gray-300 rounded text-black font-[Comic_Sans_MS]"
                 placeholder="Contraseña"
               />
               {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
@@ -138,7 +138,7 @@ function Chatlist() {
                     setPassword('');
                     setError('');
                   }}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 font-[Comic_Sans_MS]"
                 >
                   Cancelar
                 </button>
@@ -164,7 +164,7 @@ function Chatlist() {
                       setError("Error al verificar la contraseña.");
                     }
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-[Comic_Sans_MS]"
                 >
                   Entrar
                 </button>

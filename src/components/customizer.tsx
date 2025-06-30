@@ -164,32 +164,30 @@ function Customizer({ onAvatarUpdated }: { onAvatarUpdated: () => void }) {
   return (
     <div className="flex flex-col gap-2 mt-4">
       <canvas ref={canvasRef} width={300} height={200} className="border border-black" />
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex flex-row items-center justify-center gap-2 w-full">
-          <label className="text-sm">Color:</label>
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <label className="text-sm">Grosor del lápiz:</label>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={lineWidth}
-            onChange={(e) => setLineWidth(parseInt(e.target.value))}
-          />
-        </div>
-        {!loading && (
-          <button 
-            className="px-4 py-1 bg-black text-white hover:bg-white hover:text-black border border-black transition duration-300 ease-in-out"
-            onClick={handleExport}
-          >
-            Actualizar avatar
-          </button>
-        )}
+      <div className="flex flex-col items-center justify-center gap-2 w-full font-[Comic_Sans_MS]">
+        <label className="text-sm font-[Comic_Sans_MS]">Color:</label>
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+        />
+        <label className="text-sm font-[Comic_Sans_MS]">Grosor del lápiz:</label>
+        <input
+          type="range"
+          min="1"
+          max="10"
+          value={lineWidth}
+          onChange={(e) => setLineWidth(parseInt(e.target.value))}
+        />
       </div>
+      {!loading && (
+        <button 
+          className="px-4 py-1 bg-black text-white hover:bg-white hover:text-black border border-black transition duration-300 ease-in-out font-[Comic_Sans_MS]"
+          onClick={handleExport}
+        >
+          Actualizar avatar
+        </button>
+      )}
     </div>
   );
 }
